@@ -7,6 +7,7 @@ import { useEditor } from "../contexts/EditorContext";
 
 import EditorCover from "./EditorCover";
 import EditorTitle from "./EditorTitle";
+import EditorHeader from "./EditorHeader";
 
 function Editor({ classNameEditor, classNameTitle }) {
   const { editor, titleRef } = useEditor();
@@ -24,17 +25,20 @@ function Editor({ classNameEditor, classNameTitle }) {
   }
 
   return (
-    <div>
-      <EditorCover />
-      <div className="pt-8 px-36 max-h-screen overflow-y-auto">
-        <EditorTitle classNameTitle={classNameTitle} />
-        <BlockNoteView
-          onKeyDownCapture={handleKeyDownEditor}
-          editor={editor}
-          editable={true}
-          theme="light"
-          className={cn("", classNameEditor)}
-        />
+    <div className="flex flex-col overflow-y-auto">
+      <EditorHeader />
+      <div>
+        <EditorCover />
+        <div className="pt-20 px-56 max-h-screen  pb-8">
+          <EditorTitle classNameTitle={classNameTitle} />
+          <BlockNoteView
+            onKeyDownCapture={handleKeyDownEditor}
+            editor={editor}
+            editable={true}
+            theme="light"
+            className={cn("", classNameEditor)}
+          />
+        </div>
       </div>
     </div>
   );
