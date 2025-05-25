@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Password for docker postgres
+/db
+.env
+migrations
+**/__pycache__
+*.pyc
