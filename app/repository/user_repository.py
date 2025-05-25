@@ -1,0 +1,52 @@
+from typing import List, Optional
+from sqlalchemy.exc import SQLAlchemyError
+from app.core.extensions import db
+from app.models.users import User
+
+def get_user_by_id(user_id:int) -> Optional[User]:
+    return User.query.get(user_id)
+
+def get_all_users() -> List[User]:
+    return User.query.filter_by(is_active=True).all()
+
+def get_entries_by_filter(**filters) -> List[User]:
+    return User.query.filter_by(**filters).all()
+
+def get_user_by_email(email: str) -> Optional[User]:
+    return User.query.filter_by(email=email).first()
+
+def create_user(data: dict) -> Optional[User]:
+    try:
+        user = User(**data)
+        db.session.add(user)
+        db.session.commit()
+        return user
+    except SQLAlchemyError:
+        db.session.rollback()
+        return None
+
+def update_user(user_id: int, updates: dict) -> Optional[User]:
+    user = get_user_by_id(user_id)
+    if not user:
+        return None
+    for key, value in updates.items():
+        if hasattr(user, key) and value is not None:
+            setattr(user, key, value)
+    try:
+        db.session.commit()
+        return user
+    except SQLAlchemyError:
+        db.session.rollback()
+        return None
+
+def delete_user(user_id: int) -> bool:
+    user = get_user_by_id(user_id)
+    if not user:
+        return False
+    try:
+        db.session.delete(user)
+        db.session.commit()
+        return True
+    except SQLAlchemyError:
+        db.session.rollback()
+        return False

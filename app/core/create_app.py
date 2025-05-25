@@ -25,7 +25,9 @@ def create_app():
     def health():
         return "Hello from Flask inside Docker(healthy)"
     
-    from app.controller import mood_bp
+    from app.controller import mood_bp, entry_bp, user_bp
     app.register_blueprint(mood_bp)
+    app.register_blueprint(entry_bp)
+    app.register_blueprint(user_bp)
 
     return app
