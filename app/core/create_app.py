@@ -25,7 +25,7 @@ def create_app():
     def load_user(user_id):
         return get_user_by_id(user_id)
     
-    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
 
     @app.route("/health")
     def health():
