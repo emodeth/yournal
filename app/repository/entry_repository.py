@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sqlalchemy.exc import SQLAlchemyError
 from app.core.extensions import db
-from app.models.entries import Entry
+from app.models import Entry, Collection
 
 def get_entry_by_id(entry_id: int) -> Optional[Entry]:
     return Entry.query.get(entry_id)
