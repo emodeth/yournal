@@ -27,7 +27,9 @@ def create_mood_service(mood_type: str, emoji: Optional[str] = None) -> Mood:
     if get_mood_by_type(mood_type):
         raise ValueError(f"Mood '{mood_type}' already exists.")
     
-    new_mood = create_mood(mood_type, emoji)
+    data = {"type":mood_type, "emoji":emoji }
+    
+    new_mood = create_mood(data)
     if not new_mood:
         raise ValueError("Failed to create mood due to database error.")
     return new_mood
