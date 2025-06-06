@@ -5,6 +5,7 @@ from app.service.user_service import (
     get_all_users_service,
     update_user_service,
     delete_user_service,
+    get_collections_by_user_id
 )
 from app.service.entry_service import (
     get_entries_by_user_service,
@@ -70,3 +71,11 @@ def get_entries_by_user(user_id):
     else:
         entries = get_entries_by_user_service(user_id)
     return jsonify([entry.id for entry in entries]), 200
+
+@user_bp.route("/<int:user_id>/collections", methods=["GET"])
+def get_collections_by_user(user_id):
+    try:
+        collections = get_collections_by_user_id(user_id)
+        return jsonify(collections), 200
+    except ValueError as e:
+        return jsonify(error=str(e)), 404

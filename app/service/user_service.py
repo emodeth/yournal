@@ -1,12 +1,13 @@
 from typing import Optional, List
-from app.models.users import User
+from app.models import User, Collection
 from app.repository.user_repository import (
     get_user_by_id,
     get_all_users,
     get_user_by_email,
     create_user,
-    update_user,
+    update_user
 )
+from app.repository.collection_repository import get_collections_by_filter
 
 def create_user_service(data: dict) -> User:
     """
@@ -70,3 +71,14 @@ def delete_user_service(user_id: int) -> bool:
     if not user.is_active:
         return False  # Already inactive
     return update_user(user_id, {"is_active": False}) # soft delete!
+
+def get_collections_by_user_id(user_id:int) -> List[Collection]:
+    user = get_user_by_id(user_id)
+    if not user:
+        raise ValueError("User not found.")
+    
+    collections = get_collections_by_filter(user_id=user.id)
+
+    serialized = [{"id":c.id,"name":c.name}for c in collections]
+
+    return serialized
