@@ -1,6 +1,7 @@
 from flask import Flask, session
 from flask_cors import CORS
 from .extensions import db, migrate, sess, login_manager, bcrypt
+
 from .config import Config
 
 def create_app():
@@ -18,6 +19,11 @@ def create_app():
     bcrypt.init_app(app)
 
     from app import models # Ensures all models are visible to Flask-Migrate 
+    from app.repository.user_repository import get_user_by_id
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return get_user_by_id(user_id)
     
     CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
@@ -25,9 +31,11 @@ def create_app():
     def health():
         return "Hello from Flask inside Docker(healthy)"
     
-    from app.controller import mood_bp, entry_bp, user_bp
+    from app.controller import mood_bp, entry_bp, user_bp, auth_bp
     app.register_blueprint(mood_bp)
     app.register_blueprint(entry_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(auth_bp)
+
 
     return app
