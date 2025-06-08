@@ -1,7 +1,5 @@
 import Logo from "./Logo";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-import { buttonVariants } from "./ui/button";
-import { NotebookPen } from "lucide-react";
 import { Link } from "react-router";
 
 function Navbar() {
@@ -13,30 +11,10 @@ function Navbar() {
             <Logo />
           </Link>
           <div className="h-full flex items-center gap-4">
-            <div className="flex items-center justify-center h-full gap-4">
-              <Link
-                to="/"
-                className={buttonVariants({
-                  size: "sm",
-                  variant: "ghost",
-                  className: "!font-medium",
-                })}
-              >
-                Log in
-              </Link>
-            </div>
-            {/*
-             <div className="w-px h-8 bg-zinc-200 hidden sm:block"></div>
-            */}
-            <Link
-              to="/write"
-              className={buttonVariants({
-                size: "sm",
-                className: "hidden sm:flex !font-medium",
-              })}
-            >
-              <NotebookPen className="h-5 w-5 shrink-0 mr-0.5" />
-              Write New
+            <Link to="/login">
+              <button className="cursor-pointer px-6 py-2.5 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full hover:shadow-lg transition-all duration-200 font-medium">
+                Get Started
+              </button>
             </Link>
           </div>
         </div>

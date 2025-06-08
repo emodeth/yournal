@@ -5,7 +5,7 @@ function Logo({ className, fontSize, logoSize }) {
     <div className={cn("flex items-center justify-center", className)}>
       <div
         className={cn(
-          "w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center",
+          "w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center",
           logoSize
         )}
       >
