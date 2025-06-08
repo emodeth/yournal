@@ -1,14 +1,20 @@
-import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
+import HomeHero from "../components/HomeHero";
+import HomeFeatures from "../components/HomeFeatures";
+import HomeDivider from "../components/HomeDivider";
+import HomeCTA from "../components/HomeCTA";
+import Footer from "../components/Footer";
 
 function Home() {
   return (
     <div>
       <Navbar />
       <div className="min-h-screen pt-16">
-        <MaxWidthWrapper>
-          <h1>landing page</h1>
-        </MaxWidthWrapper>
+        <HomeHero />
+        <HomeDivider />
+        <HomeFeatures />
+        <HomeCTA />
+        <Footer />
       </div>
     </div>
   );
