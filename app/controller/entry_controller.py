@@ -31,13 +31,7 @@ def get_entry_by_id(entry_id):
     entry = get_entry_by_id_service(entry_id)
     if not entry:
         return jsonify(error="Entry not found"), 404
-    return jsonify(entry_id=entry.id), 200
-
-# TODO replace this to user_bp
-# @entry_bp.route("/user/<int:user_id>", methods=["GET"])
-# def get_entries_by_user(user_id):
-#     entries = get_entries_by_user_service(user_id)
-#     return jsonify([entry.id for entry in entries]), 200
+    return jsonify(entry.to_dict()), 200
 
 
 @entry_bp.route("/<int:entry_id>", methods=["PUT"])
@@ -45,7 +39,7 @@ def update_entry(entry_id):
     data = request.get_json()
     try:
         entry = update_entry_service(entry_id, **data)
-        return jsonify(entry_id=entry.id), 200
+        return jsonify(entry.to_dict()), 200
     except ValueError as e:
         return jsonify(error=str(e)), 400
 
