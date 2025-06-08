@@ -70,7 +70,7 @@ def get_entries_by_user(user_id):
             return jsonify(error="Invalid draft filter"), 400
     else:
         entries = get_entries_by_user_service(user_id)
-    return jsonify([entry.id for entry in entries]), 200
+    return jsonify([entry.to_dict() for entry in entries]), 200
 
 @user_bp.route("/<int:user_id>/collections", methods=["GET"])
 def get_collections_by_user(user_id):
