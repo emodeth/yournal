@@ -57,12 +57,26 @@ def get_entry_by_id_service(entry_id: int) -> Entry:
     return entry
 
 
-def get_entries_by_user_service(user_id: int) -> List[Entry]:
-    """Get all entries for a specific user."""
+def get_entries_by_user_service(
+        user_id: int,
+        is_draft: bool = None,
+        limit: int = None,
+        offset: int = None
+    ) -> List[Entry]:
     user = get_user_by_id(user_id=user_id)
     if not user:
         raise UserNotFound(id=user_id)
-    return get_entries_by_filter(user_id=user_id)
+
+    filters = {"user_id": user_id}
+    if is_draft is not None:
+        filters["is_draft"] = is_draft
+
+    return get_entries_by_filter(
+        **filters,
+        limit=limit,
+        offset=offset,
+        order_by=Entry.updated_at.desc()
+    )
 
 
 def get_entries_by_collection_service(collection_id: int) -> List[Entry]:
@@ -73,20 +87,20 @@ def get_entries_by_collection_service(collection_id: int) -> List[Entry]:
     return get_entries_by_filter(collection_id=collection_id)
 
 
-def get_published_entries_service(user_id: int) -> List[Entry]:
-    """Get all published (non-draft) entries for a user."""
-    user = get_user_by_id(user_id=user_id)
-    if not user:
-        raise UserNotFound(id=user_id)
-    return get_entries_by_filter(user_id=user_id, is_draft=False)
+# def get_published_entries_service(user_id: int) -> List[Entry]:
+#     """Get all published (non-draft) entries for a user."""
+#     user = get_user_by_id(user_id=user_id)
+#     if not user:
+#         raise UserNotFound(id=user_id)
+#     return get_entries_by_filter(user_id=user_id, is_draft=False)
 
 
-def get_draft_entries_service(user_id: int) -> List[Entry]:
-    """Get all draft entries of a user."""
-    user = get_user_by_id(user_id=user_id)
-    if not user:
-        raise UserNotFound(id=user_id)
-    return get_entries_by_filter(user_id=user_id, is_draft=True)
+# def get_draft_entries_service(user_id: int) -> List[Entry]:
+#     """Get all draft entries of a user."""
+#     user = get_user_by_id(user_id=user_id)
+#     if not user:
+#         raise UserNotFound(id=user_id)
+#     return get_entries_by_filter(user_id=user_id, is_draft=True)
 
 
 def update_entry_service(entry_id: int, **kwargs) -> Entry:

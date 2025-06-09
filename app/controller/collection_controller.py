@@ -68,7 +68,11 @@ def delete_collection(collection_id):
 
 @collection_bp.route("/<int:collection_id>/children", methods=["GET"])
 def get_child_collections(collection_id):
-    children = get_child_collections_service(collection_id)
+
+    limit = request.args.get("limit", default=10, type=int)
+    offset = request.args.get("offset", default=0, type=int)
+
+    children = get_child_collections_service(collection_id, limit, offset)
     result = [{"id": c.id, "name": c.name, "description": c.description, "parent_id": c.parent_id} for c in children]
     return jsonify(result), 200
 
