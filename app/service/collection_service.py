@@ -108,7 +108,7 @@ def get_collection_contents_service(collection_id: int) -> Dict[str, Any]:
 
     entries = get_entries_by_filter(collection_id=collection_id)
     serialized_entries = [
-        {"id": entry.id, "title": entry.title, "content":entry.content}
+        {"id": entry.id, "title": entry.title, "content":entry.content,"entry_mood_score":entry.entry_mood_score, "created_at":entry.created_at,"mood_id":entry.mood_id}
         for entry in entries
     ]
 
