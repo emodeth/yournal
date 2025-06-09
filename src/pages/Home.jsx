@@ -4,9 +4,15 @@ import HomeFeatures from "../components/HomeFeatures";
 import HomeDivider from "../components/HomeDivider";
 import HomeCTA from "../components/HomeCTA";
 import Footer from "../components/Footer";
+import { useAuth } from "../contexts/AuthContext";
+import Loader from "../components/Loader";
 
 function Home() {
-  return (
+  const { user } = useAuth();
+
+  return user === undefined ? (
+    <Loader />
+  ) : (
     <div>
       <Navbar />
       <div className="min-h-screen pt-16">

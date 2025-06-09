@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
 import Logo from "../components/Logo";
@@ -22,6 +22,7 @@ function Login() {
   } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   function renderLogo() {
     return (
@@ -147,8 +148,8 @@ function Login() {
           disabled={loading}
           onClick={(e) =>
             isLogin
-              ? handleLogin(e, email, password)
-              : handleRegister(e, email, password, name)
+              ? handleLogin(e, email, password, navigate)
+              : handleRegister(e, email, password, name, navigate)
           }
           className="cursor-pointer w-full flex justify-center py-2 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >

@@ -4,9 +4,12 @@ import MaxWidthWrapper from "../components/MaxWidthWrapper";
 import Navbar from "../components/Navbar";
 import { ArrowLeft, Calendar, Filter, Search } from "lucide-react";
 import { useState } from "react";
+import Loader from "../components/Loader";
+import { useAuth } from "../contexts/AuthContext";
 
 function DetailedCollection() {
   const { id } = useParams();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [moodFilter, setMoodFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
@@ -130,7 +133,9 @@ function DetailedCollection() {
     );
   }
 
-  return (
+  return user === undefined ? (
+    <Loader />
+  ) : (
     <div className="min-h-screen bg-[#f9fafb]">
       <Navbar />
       <MaxWidthWrapper className={"py-8"}>
