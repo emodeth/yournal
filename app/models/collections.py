@@ -1,7 +1,7 @@
 from app.core.extensions import db
-from .utils import get_current_datetime
+from .utils import get_current_datetime, SerializableMixin
 
-class Collection(db.Model):
+class Collection(db.Model, SerializableMixin):
     __tablename__ = "collections"
 
     id = db.Column(db.Integer, primary_key=True)
