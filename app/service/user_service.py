@@ -99,29 +99,29 @@ def get_collections_by_user_id(user_id: int, limit: int = None, offset: int = No
         raise UserNotFound(id=user_id)
 
     collections = get_collections_by_filter(user_id=user.id, parent_id=None, limit=limit, offset=offset)
-    
     if not collections:
-        return list()
-    
+        return []
+
     serialized = []
     for c in collections:
-        latest_entry = (
-            get_entries_by_filter(
-                collection_id=c.id,
-                order_by=Entry.updated_at.desc(),
-                limit=1
-            )
-        )
-        latest = latest_entry[0] if latest_entry else None
+        entries = get_entries_by_filter(collection_id=c.id, order_by=Entry.updated_at.desc())
+        latest = entries[0] if entries else None
+        entry_count = len(entries)
+
+        latest_entry = None
+        if latest:
+            latest_entry = {
+                "id": latest.id,
+                "title": latest.title,
+                "updated_at": latest.updated_at.isoformat() if latest.updated_at else None
+            }
 
         serialized.append({
             "id": c.id,
             "name": c.name,
-            "latest_entry": {
-                "id": latest.id,
-                "title": latest.title,
-                "updated_at": latest.updated_at.isoformat()
-            } if latest else None
+            "description": c.description,
+            "entry_count": entry_count,
+            "latest_entry": latest_entry
         })
 
     return serialized
