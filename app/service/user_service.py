@@ -1,5 +1,5 @@
 from typing import Optional, List
-from app.models import User, Collection
+from app.models import User, Collection, Entry
 from app.core.exceptions import UserNotFound
 from app.repository.user_repository import (
     get_user_by_id,
@@ -9,6 +9,8 @@ from app.repository.user_repository import (
     update_user
 )
 from app.repository.collection_repository import get_collections_by_filter
+from app.repository.entry_repository import get_entries_by_filter
+
 
 def create_user_service(data: dict) -> User:
     """
@@ -88,5 +90,38 @@ def get_collections_by_user_id(user_id:int) -> List[Collection]:
     collections = get_collections_by_filter(user_id=user.id)
 
     serialized = [{"id":c.id,"name":c.name}for c in collections]
+
+    return serialized
+
+def get_collections_by_user_id(user_id: int, limit: int = None, offset: int = None) -> List[dict]:
+    user = get_user_by_id(user_id=user_id)
+    if not user:
+        raise UserNotFound(id=user_id)
+
+    collections = get_collections_by_filter(user_id=user.id, parent_id=None, limit=limit, offset=offset)
+    
+    if not collections:
+        return list()
+    
+    serialized = []
+    for c in collections:
+        latest_entry = (
+            get_entries_by_filter(
+                collection_id=c.id,
+                order_by=Entry.updated_at.desc(),
+                limit=1
+            )
+        )
+        latest = latest_entry[0] if latest_entry else None
+
+        serialized.append({
+            "id": c.id,
+            "name": c.name,
+            "latest_entry": {
+                "id": latest.id,
+                "title": latest.title,
+                "updated_at": latest.updated_at.isoformat()
+            } if latest else None
+        })
 
     return serialized

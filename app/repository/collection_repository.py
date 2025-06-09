@@ -12,9 +12,20 @@ def get_all_collections() -> List[Collection]:
     return Collection.query.all()
 
 
-def get_collections_by_filter(**filters) -> List[Collection]:
-    return Collection.query.filter_by(**filters).all()
+# def get_collections_by_filter(**filters) -> List[Collection]:
+#     return Collection.query.filter_by(**filters).all()
 
+def get_collections_by_filter(limit=None, offset=None, order_by=None, **filters) -> List[Collection]:
+    query = Collection.query.filter_by(**filters)
+    
+    if order_by is not None:
+        query = query.order_by(order_by)
+    if offset is not None:
+        query = query.offset(offset)
+    if limit is not None:
+        query = query.limit(limit)
+    
+    return query.all()
 
 def create_collection(data: dict) -> Optional[Collection]:
     try:
