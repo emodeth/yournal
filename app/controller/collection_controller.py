@@ -19,9 +19,9 @@ def create_collection():
         collection = create_collection_service(data)
         return jsonify(collection.to_dict()), 201
     except ValueError as e:
-        return jsonify(error=str(e)), 400
+        return jsonify(message=str(e)), 400
     except Exception:
-        return jsonify(error="Internal server error"), 500
+        return jsonify(message="Internal server error"), 500
 
 
 @collection_bp.route("/", methods=["GET"])
