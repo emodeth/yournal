@@ -5,7 +5,7 @@ from app.core.extensions import bcrypt
 from app.service.auth_service import validate_signup_data, validate_login_data 
 from app.service.user_service import get_user_by_email, create_user_service
 from app.service import auth_service
-
+from flask_login import current_user
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -49,3 +49,15 @@ def logout():
     logout_user()
     session.clear()
     return jsonify({"message": "Logged out successfully"}), 200
+
+
+@auth_bp.route('/me', methods=['GET'])
+@login_required
+def get_current_user():
+    
+    return jsonify({
+        "id": current_user.id,
+        "email": current_user.email,
+        "name": current_user.name,
+        "is_authenticated": current_user.is_authenticated
+    }), 200
