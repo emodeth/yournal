@@ -1,5 +1,21 @@
 const URL = "http://127.0.0.1:5000";
 
+export async function fetchUser(setUser) {
+  try {
+    const res = await fetch(`${URL}/auth/me`, { credentials: "include" });
+    if (res.ok) {
+      const data = await res.json();
+      setUser(data);
+    } else if (res.status === 401) {
+      setUser(false);
+    } else {
+      setUser(false);
+    }
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
 export async function login(email, password) {
   const res = await fetch(`${URL}/auth/login`, {
     method: "POST",
@@ -14,12 +30,11 @@ export async function login(email, password) {
   });
 
   const data = await res.json();
-  console.log(data);
   return data;
 }
 
 export async function logout() {
-  const res = await fetch(`${URL}/auth/login`, {
+  const res = await fetch(`${URL}/auth/logout`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -28,7 +43,6 @@ export async function logout() {
   });
 
   const data = await res.json();
-  console.log(data);
   return data;
 }
 
