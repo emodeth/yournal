@@ -8,8 +8,9 @@ import { DashboardProvider } from "./contexts/DashboardContext.jsx";
 import Home from "./pages/Home.jsx";
 import Write from "./pages/Write.jsx";
 import Login from "./pages/Login.jsx";
-
 import Dashboard from "./pages/Dashboard.jsx";
+import Collections from "./pages/Collections.jsx";
+import DetailedCollection from "./pages/DetailedCollection.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -20,8 +21,10 @@ createRoot(document.getElementById("root")).render(
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/write" element={<Write />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/collections" element={<Collections />} />
+              <Route path="/collections/:id" element={<DetailedCollection />} />
+              <Route path="/write" element={<Write />} />
             </Routes>
           </BrowserRouter>
         </EditorProvider>
