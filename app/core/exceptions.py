@@ -6,7 +6,7 @@ class DomainException(Exception):
         self.detail = detail or self.detail
 
     def to_dict(self):
-        return {"error": self.detail}
+        return {"message": self.detail}
 
 
 class NotFoundException(DomainException):
