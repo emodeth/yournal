@@ -1,5 +1,6 @@
 from typing import Optional, List
 from app.models import User, Collection
+from app.core.exceptions import UserNotFound
 from app.repository.user_repository import (
     get_user_by_id,
     get_all_users,
@@ -37,13 +38,20 @@ def create_user_service(data: dict) -> User:
         raise ValueError("Failed to create user due to database error.")
     return created
 
-def get_user_by_id_service(user_id: int) -> Optional[User]:
-    return get_user_by_id(user_id)
+def get_user_by_id_service(user_id: int) -> User:
+    user = get_user_by_id(user_id=user_id)
+    if not user:
+        raise UserNotFound(id=user_id)
+    return user
 
 def get_all_users_service() -> List[User]:
     return get_all_users()
 
 def update_user_service(user_id: int, **kwargs) -> Optional[User]:
+    user = get_user_by_id(user_id=user_id)
+    if not user:
+        raise UserNotFound(id=user_id)
+    
     allowed_fields = {"email", "name", "image_url", "is_active"}
     updates = {k: v for k, v in kwargs.items() if k in allowed_fields and v is not None}
 
@@ -65,17 +73,17 @@ def update_user_service(user_id: int, **kwargs) -> Optional[User]:
     return updated
 
 def delete_user_service(user_id: int) -> bool:
-    user = get_user_by_id(user_id)
+    user = get_user_by_id(user_id=user_id)
     if not user:
-        raise ValueError("User not found.")
+        raise UserNotFound(id=user_id)
     if not user.is_active:
         return False  # Already inactive
     return update_user(user_id, {"is_active": False}) # soft delete!
 
 def get_collections_by_user_id(user_id:int) -> List[Collection]:
-    user = get_user_by_id(user_id)
+    user = get_user_by_id(user_id=user_id)
     if not user:
-        raise ValueError("User not found.")
+        raise UserNotFound(id=user_id)
     
     collections = get_collections_by_filter(user_id=user.id)
 

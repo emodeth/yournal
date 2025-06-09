@@ -2,6 +2,7 @@ from app.models.users import User
 from app.core.extensions import db, bcrypt
 from app.service.user_service import create_user
 from app.repository.user_repository import get_user_by_email
+from app.core.exceptions import PermissionDenied
 
 
 def validate_signup_data(data: dict) -> dict:
@@ -34,6 +35,6 @@ def authenticate_user(email: str, password: str) -> User:
         raise ValueError("Invalid email or password")
 
     if not user.is_active:
-        raise PermissionError("User account is deactivated")
+        raise PermissionDenied("User account is deactivated")
 
     return user

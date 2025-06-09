@@ -29,8 +29,6 @@ def get_all_entries():
 @entry_bp.route("/<int:entry_id>", methods=["GET"])
 def get_entry_by_id(entry_id):
     entry = get_entry_by_id_service(entry_id)
-    if not entry:
-        return jsonify(error="Entry not found"), 404
     return jsonify(entry.to_dict()), 200
 
 

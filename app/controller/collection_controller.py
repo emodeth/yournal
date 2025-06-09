@@ -37,8 +37,6 @@ def get_all_collections():
 @collection_bp.route("/<int:collection_id>", methods=["GET"])
 def get_collection_by_id(collection_id):
     collection = get_collection_by_id_service(collection_id)
-    if not collection:
-        return jsonify(error="Collection not found"), 404
     return jsonify({
         "id": collection.id,
         "name": collection.name,
@@ -64,8 +62,6 @@ def delete_collection(collection_id):
         result = delete_collection_service(collection_id)
         if result:
             return jsonify(message="Collection deleted"), 200
-        else:
-            return jsonify(message="Collection not found or already deleted"), 404
     except ValueError as e:
         return jsonify(error=str(e)), 404
     
@@ -82,7 +78,7 @@ def get_parent_collection(collection_id):
     try:
         parent = get_parent_collection_service(collection_id)
         if not parent:
-            return jsonify(message="No parent collection found"), 404
+            return jsonify(message="No parent collection found"), 200
         result = {
             "id": parent.id,
             "name": parent.name,
