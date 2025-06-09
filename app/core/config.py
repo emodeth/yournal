@@ -20,5 +20,7 @@ class Config:
     SESSION_KEY_PREFIX = 'session:'
     SESSION_COOKIE_NAME = 'my_session'
     # SESSION_FILE_DIR = './api/sessions'
-    SESSION_COOKIE_SECURE = True  
+    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SECURE = True
+ 
     PERMANENT_SESSION_LIFETIME = timedelta(days=int(os.getenv('PERMANENT_SESSION_LIFETIME', 3)))
