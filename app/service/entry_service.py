@@ -1,5 +1,8 @@
 from typing import Optional, List
 from app.models.entries import Entry
+from app.core.exceptions import EntryNotFound, UserNotFound, CollectionNotFound, BusinessRuleViolation
+from app.repository.user_repository import get_user_by_id
+from app.repository.collection_repository import get_collection_by_id
 from app.repository.entry_repository import (
     get_all_entries,
     get_entry_by_id,
@@ -23,6 +26,14 @@ def create_entry_service(data: dict) -> Entry:
     if not data.get("collection_id"):
         data["is_draft"] = True
 
+    user_id = data["user_id"]
+    collection_id = data.get("collection_id")
+    if collection_id:
+        collection = get_collection_by_id(collection_id)
+        if not collection:
+            raise CollectionNotFound(id=collection_id)
+        if str(collection.user_id) != str(user_id):
+            raise BusinessRuleViolation("You cannot assign a parent collection that belongs to another user.")
     try:
         entry = create_entry(data)
     except Exception as e:
@@ -38,32 +49,47 @@ def get_all_entries_service() -> List[Entry]:
     return get_all_entries()
 
 
-def get_entry_by_id_service(entry_id: int) -> Optional[Entry]:
+def get_entry_by_id_service(entry_id: int) -> Entry:
     """Retrieve an entry by its ID."""
-    return get_entry_by_id(entry_id)
+    entry = get_entry_by_id(entry_id)
+    if not entry:
+        raise EntryNotFound(id=entry_id)
+    return entry
 
 
 def get_entries_by_user_service(user_id: int) -> List[Entry]:
     """Get all entries for a specific user."""
+    user = get_user_by_id(user_id=user_id)
+    if not user:
+        raise UserNotFound(id=user_id)
     return get_entries_by_filter(user_id=user_id)
 
 
 def get_entries_by_collection_service(collection_id: int) -> List[Entry]:
     """Get all entries in a specific collection."""
+    collection = get_collection_by_id(collection_id=collection_id)
+    if not collection:
+        raise CollectionNotFound(id=collection_id)
     return get_entries_by_filter(collection_id=collection_id)
 
 
 def get_published_entries_service(user_id: int) -> List[Entry]:
     """Get all published (non-draft) entries for a user."""
+    user = get_user_by_id(user_id=user_id)
+    if not user:
+        raise UserNotFound(id=user_id)
     return get_entries_by_filter(user_id=user_id, is_draft=False)
 
 
 def get_draft_entries_service(user_id: int) -> List[Entry]:
     """Get all draft entries of a user."""
+    user = get_user_by_id(user_id=user_id)
+    if not user:
+        raise UserNotFound(id=user_id)
     return get_entries_by_filter(user_id=user_id, is_draft=True)
 
 
-def update_entry_service(entry_id: int, **kwargs) -> Optional[Entry]:
+def update_entry_service(entry_id: int, **kwargs) -> Entry:
     """
     Update an entry's allowed fields.
     If collection_id is removed or set to None, is_draft is set to True.
@@ -77,7 +103,7 @@ def update_entry_service(entry_id: int, **kwargs) -> Optional[Entry]:
 
     entry = get_entry_by_id(entry_id)
     if not entry:
-        raise ValueError(f"Entry with ID {entry_id} not found.")
+        raise EntryNotFound(id=entry_id)
 
     if "collection_id" in kwargs and not kwargs.get("collection_id"):
         updates["is_draft"] = True
@@ -97,5 +123,5 @@ def delete_entry_service(entry_id: int) -> bool:
     """Delete an entry by its ID."""
     entry = get_entry_by_id(entry_id)
     if not entry:
-        raise ValueError(f"Entry with ID {entry_id} not found.")
+        raise EntryNotFound(id=entry_id)
     return delete_entry(entry_id)

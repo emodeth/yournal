@@ -46,8 +46,6 @@ def update_mood(mood_id):
     data = request.get_json()
     try:
         mood = update_mood_service(mood_id, **data)
-        if not mood:
-            return jsonify({"error": "Mood not found"}), 404
         return jsonify({"id": mood.id, "type": mood.type, "emoji": mood.emoji}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
@@ -55,7 +53,5 @@ def update_mood(mood_id):
 
 @mood_bp.route("/<int:mood_id>", methods=["DELETE"])
 def delete_mood(mood_id):
-    success = delete_mood_service(mood_id)
-    if not success:
-        return jsonify({"error": "Mood not found"}), 404
+    delete_mood_service(mood_id)
     return jsonify({"message": "Mood deleted"}), 200

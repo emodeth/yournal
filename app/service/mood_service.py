@@ -1,5 +1,6 @@
 from typing import Optional, List
 from app.models.moods import Mood
+from app.core.exceptions import MoodNotFound
 from app.repository.mood_repository import (
     get_all_moods,
     get_mood_by_id,
@@ -55,7 +56,10 @@ def get_mood_by_id_service(mood_id: int) -> Optional[Mood]:
     Returns:
         Optional[Mood]: The Mood instance if found, else None.
     """
-    return get_mood_by_id(mood_id)
+    mood = get_mood_by_id(mood_id)
+    if not mood:
+        raise MoodNotFound(id=mood_id)
+    return mood
 
 
 def get_mood_by_type_service(mood_type: str) -> Optional[Mood]:
@@ -107,4 +111,7 @@ def delete_mood_service(mood_id: int) -> bool:
     Returns:
         bool: True if deletion was successful, False otherwise.
     """
+    mood = get_mood_by_id(mood)
+    if not mood:
+        raise MoodNotFound(id=mood_id)
     return delete_mood(mood_id)

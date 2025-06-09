@@ -1,7 +1,7 @@
 from flask import Flask, session
 from flask_cors import CORS
 from .extensions import db, migrate, sess, login_manager, bcrypt
-
+from .error_handlers import register_error_handlers
 from .config import Config
 
 def create_app():
@@ -30,6 +30,8 @@ def create_app():
     @app.route("/health")
     def health():
         return "Hello from Flask inside Docker(healthy)"
+    
+    register_error_handlers(app)
     
     from app.controller import mood_bp, entry_bp, user_bp, auth_bp, collection_bp
     app.register_blueprint(mood_bp)
