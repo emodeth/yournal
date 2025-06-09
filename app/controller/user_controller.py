@@ -70,10 +70,14 @@ def get_entries_by_user(user_id):
         entries = get_entries_by_user_service(user_id)
     return jsonify([entry.to_dict() for entry in entries]), 200
 
+
 @user_bp.route("/<int:user_id>/collections", methods=["GET"])
 def get_collections_by_user(user_id):
     try:
-        collections = get_collections_by_user_id(user_id)
+        limit = request.args.get("limit", default=10, type=int)
+        offset = request.args.get("offset", default=0, type=int)
+
+        collections = get_collections_by_user_id(user_id=user_id, limit=limit, offset=offset)
         return jsonify(collections), 200
     except ValueError as e:
         return jsonify(error=str(e)), 404

@@ -9,8 +9,21 @@ def get_entry_by_id(entry_id: int) -> Optional[Entry]:
 def get_all_entries() -> List[Entry]:
     return Entry.query.all()
 
-def get_entries_by_filter(**filters) -> List[Entry]:
-    return Entry.query.filter_by(**filters).all()
+# def get_entries_by_filter(**filters) -> List[Entry]:
+#     return Entry.query.filter_by(**filters).all()
+
+def get_entries_by_filter(limit=None, offset=None, order_by=None, **filters) -> List[Entry]:
+    query = Entry.query.filter_by(**filters)
+    
+    if order_by is not None:
+        query = query.order_by(order_by)
+    if offset is not None:
+        query = query.offset(offset)
+    if limit is not None:
+        query = query.limit(limit)
+    
+    return query.all()
+
 
 def create_entry(data: dict) -> Optional[Entry]:
     try:
