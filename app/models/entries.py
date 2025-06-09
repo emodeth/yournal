@@ -10,7 +10,7 @@ class Entry(db.Model, SerializableMixin):
     cover_image = db.Column(db.String(255), nullable=True)
 
     mood_id = db.Column(db.Integer, db.ForeignKey("moods.id"), nullable=True)
-    mood_score = db.Column(db.Integer, nullable=True)
+    entry_mood_score = db.Column(db.Integer, nullable=True)
 
     collection_id = db.Column(db.Integer, db.ForeignKey("collections.id"), nullable=True)
     is_draft = db.Column(db.Boolean, default=True, nullable=False)

@@ -13,21 +13,21 @@ mood_bp = Blueprint("mood",__name__, url_prefix="/moods")
 @mood_bp.route("/", methods=["GET"])
 def get_all_moods():
     moods = get_all_moods_service()
-    return jsonify([{"id": m.id, "type": m.type, "emoji": m.emoji} for m in moods]), 200
+    return jsonify([m.to_dict() for m in moods]), 200
 
 @mood_bp.route("/<int:mood_id>", methods=["GET"])
 def get_mood_by_id(mood_id):
     mood = get_mood_by_id_service(mood_id)
     if not mood:
         return jsonify({"error": "Mood not found"}), 404
-    return jsonify({"id": mood.id, "type": mood.type, "emoji": mood.emoji}), 200
+    return jsonify(mood.to_dict()), 200
 
 @mood_bp.route("/type/<string:mood_type>", methods=["GET"])
 def get_mood_by_type(mood_type):
     mood = get_mood_by_type_service(mood_type)
     if not mood:
         return jsonify({"error": "Mood not found"}), 404
-    return jsonify({"id": mood.id, "type": mood.type, "emoji": mood.emoji}), 200
+    return jsonify(mood.to_dict()), 200
 
 @mood_bp.route("/", methods=["POST"])
 def create_mood():
@@ -36,7 +36,7 @@ def create_mood():
     emoji = data.get("emoji")
     try:
         mood = create_mood_service(mood_type, emoji)
-        return jsonify({"id": mood.id, "type": mood.type, "emoji": mood.emoji}), 201
+        return jsonify(mood.to_dict()), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
@@ -46,7 +46,7 @@ def update_mood(mood_id):
     data = request.get_json()
     try:
         mood = update_mood_service(mood_id, **data)
-        return jsonify({"id": mood.id, "type": mood.type, "emoji": mood.emoji}), 200
+        return jsonify(mood.to_dict()), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     
