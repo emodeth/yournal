@@ -60,11 +60,11 @@ def get_collections_by_user_service(user_id: int) -> List[Collection]:
     return get_collections_by_filter(user_id=user_id)
 
 
-def get_child_collections_service(parent_id: int) -> List[Collection]:
+def get_child_collections_service(parent_id: int, limit:int, offset:int) -> List[Collection]:
     parent_collection = get_collection_by_id(parent_id)
     if not parent_collection:
         raise CollectionNotFound(id=parent_id)
-    return get_collections_by_filter(parent_id=parent_id)
+    return get_collections_by_filter(parent_id=parent_id, limit=limit, offset=offset, order_by=Collection.updated_at.desc())
 
 
 def get_parent_collection_service(collection_id: int) -> Collection:

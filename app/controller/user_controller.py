@@ -7,11 +7,7 @@ from app.service.user_service import (
     delete_user_service,
     get_collections_by_user_id
 )
-from app.service.entry_service import (
-    get_entries_by_user_service,
-    get_draft_entries_service,
-    get_published_entries_service,
-)
+from app.service.entry_service import get_entries_by_user_service
 
 user_bp = Blueprint("user", __name__, url_prefix="/users")
 
@@ -59,16 +55,29 @@ def delete_user(user_id):
 @user_bp.route("/<int:user_id>/entries", methods=["GET"])
 def get_entries_by_user(user_id):
     draft = request.args.get("draft")
+    limit = request.args.get("limit", default=10, type=int)
+    offset = request.args.get("offset", default=0, type=int)
+
     if draft is not None:
         if draft.lower() == "true":
-            entries = get_draft_entries_service(user_id)
+            is_draft = True
         elif draft.lower() == "false":
-            entries = get_published_entries_service(user_id)
+            is_draft = False
         else:
-            return jsonify(error="Invalid draft filter"), 400
+            return jsonify(error="Invalid draft filter. Use true or false."), 400
     else:
-        entries = get_entries_by_user_service(user_id)
-    return jsonify([entry.to_dict() for entry in entries]), 200
+        is_draft = None
+
+    try:
+        entries = get_entries_by_user_service(
+            user_id=user_id,
+            is_draft=is_draft,
+            limit=limit,
+            offset=offset
+        )
+        return jsonify([entry.to_dict() for entry in entries]), 200
+    except ValueError as e:
+        return jsonify(error=str(e)), 404
 
 
 @user_bp.route("/<int:user_id>/collections", methods=["GET"])
