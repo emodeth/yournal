@@ -1,6 +1,7 @@
 from typing import Optional, List
 from app.models import User, Collection, Entry
 from app.core.exceptions import UserNotFound
+from app.service.collection_service import create_collection
 from app.repository.user_repository import (
     get_user_by_id,
     get_all_users,
@@ -10,6 +11,7 @@ from app.repository.user_repository import (
 )
 from app.repository.collection_repository import get_collections_by_filter
 from app.repository.entry_repository import get_entries_by_filter
+
 
 
 def create_user_service(data: dict) -> User:
@@ -38,7 +40,25 @@ def create_user_service(data: dict) -> User:
     })
     if not created:
         raise ValueError("Failed to create user due to database error.")
-    return created
+    
+    draft_collection = create_collection({
+        "user_id":created.id,
+        "name": "General",
+        "description":"Default collection to start with."
+    })
+
+    if not draft_collection:
+        raise ValueError("Failed to create drafts collection")
+    
+    created.default_collection_id = draft_collection.id
+
+    updated_user = update_user(created.id, {"default_collection_id":draft_collection.id})
+
+    if not updated_user:
+        raise ValueError("Failed to update user with drafts collection")
+
+    return updated_user
+
 
 def get_user_by_id_service(user_id: int) -> User:
     user = get_user_by_id(user_id=user_id)

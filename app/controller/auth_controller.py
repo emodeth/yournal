@@ -59,5 +59,6 @@ def get_current_user():
         "id": current_user.id,
         "email": current_user.email,
         "name": current_user.name,
+        "default_collection_id": current_user.default_collection_id,
         "is_authenticated": current_user.is_authenticated
     }), 200

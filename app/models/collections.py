@@ -15,5 +15,5 @@ class Collection(db.Model, SerializableMixin):
     updated_at = db.Column(db.DateTime(timezone=True), default=get_current_datetime, onupdate=get_current_datetime)
 
     # parent = db.relationship("Collection", remote_side=[id], backref="children", lazy=True)
-    user = db.relationship("User", back_populates="collections", lazy=True)
+    user = db.relationship("User", back_populates="collections", foreign_keys=[user_id], lazy=True)
 

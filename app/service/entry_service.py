@@ -14,26 +14,33 @@ from app.repository.entry_repository import (
 
 def create_entry_service(data: dict) -> Entry:
     """
-    Create a new entry.
-    If no collection_id is provided, is_draft is set to True.
+    Create a new entry for a user.
+    - If no collection_id is provided, it defaults to the user's default_collection_id and sets is_draft to True.
     """
-    # Validate required fields
     required_fields = ["user_id"]
     missing = [field for field in required_fields if not data.get(field)]
     if missing:
         raise ValueError(f"Missing required fields: {', '.join(missing)}")
 
-    if not data.get("collection_id"):
-        data["is_draft"] = True
-
     user_id = data["user_id"]
-    collection_id = data.get("collection_id")
-    if collection_id:
-        collection = get_collection_by_id(collection_id)
-        if not collection:
-            raise CollectionNotFound(id=collection_id)
-        if str(collection.user_id) != str(user_id):
-            raise BusinessRuleViolation("You cannot assign a collection that belongs to another user.")
+    user = get_user_by_id(user_id=user_id)
+    if not user:
+        raise UserNotFound(id=user_id)
+
+    # If collection_id is missing, assign to drafts and mark as draft
+    if not data.get("collection_id"):
+        if not user.default_collection_id:
+            raise ValueError("User does not have a drafts collection.")
+        data["is_draft"] = True
+        data["collection_id"] = user.default_collection_id
+
+    collection_id = data["collection_id"]
+    collection = get_collection_by_id(collection_id)
+    if not collection:
+        raise CollectionNotFound(id=collection_id)
+    if collection.user_id != user.id:
+        raise BusinessRuleViolation("Collection does not belong to the user.")
+
     try:
         entry = create_entry(data)
     except Exception as e:
@@ -42,7 +49,6 @@ def create_entry_service(data: dict) -> Entry:
     if not entry:
         raise ValueError("Failed to create entry due to database error.")
     return entry
-
 
 def get_all_entries_service() -> List[Entry]:
     """Retrieve all entries."""

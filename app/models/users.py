@@ -15,11 +15,19 @@ class User(db.Model, UserMixin):
 
     image_url = db.Column(db.String(500), nullable=True) 
     is_active = db.Column(db.Boolean, default=True)
+    default_collection_id = db.Column(db.Integer, db.ForeignKey("collections.id"), nullable=True, unique=True)
+
 
     created_at = db.Column(db.DateTime(timezone=True), default=get_current_datetime)
     updated_at = db.Column(db.DateTime(timezone=True), default=get_current_datetime, onupdate=get_current_datetime)
 
-    collections = db.relationship("Collection", back_populates="user", lazy=True)
+    drafts_collection = db.relationship("Collection", foreign_keys=[default_collection_id], post_update=True)
+    collections = db.relationship(
+        "Collection",
+        back_populates="user",
+        foreign_keys="Collection.user_id",  # 👈 tell SQLAlchemy the FK to use
+        lazy=True
+    )
     entries = db.relationship("Entry", back_populates="user", lazy=True)
 
     def set_password(self, password: str):

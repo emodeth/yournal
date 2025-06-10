@@ -30,7 +30,7 @@ def get_all_users():
 @user_bp.route("/<int:user_id>", methods=["GET"])
 def get_user_by_id(user_id):
     user = get_user_by_id_service(user_id)
-    return jsonify({"id": user.id, "email": user.email, "name": user.name}), 200
+    return jsonify({"id": user.id, "email": user.email, "name": user.name, "default_collection_id":user.default_collection_id}), 200
 
 @user_bp.route("/<int:user_id>", methods=["PUT"])
 def update_user(user_id):
