@@ -7,10 +7,11 @@ import Navbar from "../components/Navbar";
 import { useAuth } from "../contexts/AuthContext";
 import { getCollectionsByUserId } from "../api/collections";
 import { useCollections } from "../contexts/CollectionsContext";
+import CollectionModal from "../components/CollectionModal";
 
 function Collections() {
   const { user } = useAuth();
-  const { setCollections } = useCollections();
+  const { isModalOpened, setCollections } = useCollections();
 
   useEffect(() => {
     async function handleGetCollections() {
@@ -31,6 +32,7 @@ function Collections() {
       <MaxWidthWrapper className={"py-8"}>
         <CollectionsHeader />
         <CollectionsGrid />
+        {isModalOpened && <CollectionModal />}
       </MaxWidthWrapper>
     </div>
   );

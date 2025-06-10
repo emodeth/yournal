@@ -61,8 +61,12 @@ function DetailedCollection() {
                 {activeCollection.description}
               </p>
               <p className="text-sm text-gray-500">
-                {collection?.entry_count}{" "}
-                {collection?.entry_count === 1 ? "entry" : "entries"}
+                {collectionContent?.entries.length !== 0
+                  ? collectionContent?.entries.length
+                  : null}{" "}
+                {collectionContent?.entries.length === 0 ? "No entry" : null}
+                {collectionContent?.entries.length === 1 ? "entry" : null}
+                {collectionContent?.entries.length > 1 ? "entries" : null}
               </p>
             </div>
           </div>
@@ -86,8 +90,12 @@ function DetailedCollection() {
               </h1>
               <p className="text-gray-600 mb-4">{collection.description}</p>
               <p className="text-sm text-gray-500">
-                {collection?.entry_count}{" "}
-                {collection?.entry_count === 1 ? "entry" : "entries"}
+                {collectionContent?.entries.length !== 0
+                  ? collectionContent?.entries.length
+                  : null}{" "}
+                {collectionContent?.entries.length === 0 ? "No entry" : null}
+                {collectionContent?.entries.length === 1 ? "entry" : null}
+                {collectionContent?.entries.length > 1 ? "entries" : null}
               </p>
             </div>
           </div>

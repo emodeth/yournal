@@ -2,9 +2,11 @@ import { Calendar, Edit2, FolderOpen, Plus, Trash2 } from "lucide-react";
 import { Link } from "react-router";
 import { format, parseISO } from "date-fns";
 import { useCollections } from "../contexts/CollectionsContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function CollectionsGridItem({ collection }) {
-  const { setActiveCollection } = useCollections();
+  const { user } = useAuth();
+  const { setActiveCollection, handleEdit, handleDelete } = useCollections();
 
   return (
     <div>
@@ -30,11 +32,17 @@ function CollectionsGridItem({ collection }) {
             </div>
           </div>
           <div className="flex space-x-1">
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+            <button
+              onClick={() => handleEdit(collection)}
+              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+            >
               <Edit2 size={16} />
             </button>
             {collection.name !== "General" && (
-              <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
+              <button
+                onClick={() => handleDelete(collection?.id, user?.id)}
+                className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+              >
                 <Trash2 size={16} />
               </button>
             )}

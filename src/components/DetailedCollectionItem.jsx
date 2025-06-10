@@ -1,7 +1,8 @@
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getMoodById } from "../api/moods";
+import { getContentSubstring, getMoodText } from "../lib/utils";
 
 function DetailedCollectionItem({ item }) {
   const [mood, setMood] = useState(null);
@@ -33,7 +34,9 @@ function DetailedCollectionItem({ item }) {
                   )}
                 </span>
                 <span>•</span>
-                <span>{mood?.mood_weight && mood.mood_weight}</span>
+                <span>
+                  {mood?.mood_weight && getMoodText(mood.mood_weight)}
+                </span>
               </div>
             </div>
           </div>
@@ -47,7 +50,7 @@ function DetailedCollectionItem({ item }) {
 
         <div className="prose max-w-none">
           <p className="text-gray-700 whitespace-pre-wrap">
-            {item.content.Content} {"..."}
+            {getContentSubstring(item.content.Content)}
           </p>
         </div>
       </div>

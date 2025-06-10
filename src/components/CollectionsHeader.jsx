@@ -1,6 +1,9 @@
 import { Plus } from "lucide-react";
+import { useCollections } from "../contexts/CollectionsContext";
 
 function CollectionsHeader() {
+  const { openModal } = useCollections();
+
   return (
     <div className="flex justify-between items-center mb-8">
       <div>
@@ -9,7 +12,10 @@ function CollectionsHeader() {
           Organize your mood entries into meaningful collections.
         </p>
       </div>
-      <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+      <button
+        onClick={openModal}
+        className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
         <Plus size={20} />
         <span>New Collection</span>
       </button>

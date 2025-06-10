@@ -1,10 +1,74 @@
 import { createContext, useContext, useState } from "react";
+import {
+  createCollection,
+  updateCollection,
+  getCollectionsByUserId,
+  deleteCollection,
+} from "../api/collections";
 
 const CollectionsContext = createContext();
 
 export function CollectionsProvider({ children }) {
   const [collections, setCollections] = useState(null);
   const [activeCollection, setActiveCollection] = useState(null);
+  const [isModalOpened, setIsModalOpened] = useState(false);
+  const [editingCollection, setEditingCollection] = useState(null);
+
+  const [collectionName, setCollectionName] = useState("");
+  const [collectionDescription, setCollectionDescription] = useState("");
+
+  async function handleGetCollections(userId) {
+    if (userId) {
+      const data = await getCollectionsByUserId(userId);
+      setCollections(data);
+    }
+  }
+
+  function resetModal() {
+    setEditingCollection(null);
+    setCollectionName("");
+    setCollectionDescription("");
+  }
+
+  function openModal() {
+    resetModal();
+    setIsModalOpened(true);
+  }
+
+  function handleEdit(collection) {
+    setEditingCollection(collection);
+    setCollectionName(collection.name);
+    setCollectionDescription(collection.description);
+    setIsModalOpened(true);
+  }
+
+  async function handleDelete(collectionId, userId) {
+    await deleteCollection(collectionId);
+    await handleGetCollections(userId);
+  }
+
+  async function handleSubmit(
+    e,
+    collectionId = "",
+    userId,
+    collectionName,
+    collectionDescription
+  ) {
+    e.preventDefault();
+
+    if (editingCollection !== null) {
+      await updateCollection(
+        collectionId,
+        collectionName,
+        collectionDescription
+      );
+    } else {
+      await createCollection(userId, collectionName, collectionDescription);
+    }
+    await handleGetCollections(userId);
+    setIsModalOpened(false);
+    resetModal();
+  }
 
   return (
     <CollectionsContext.Provider
@@ -13,6 +77,17 @@ export function CollectionsProvider({ children }) {
         setCollections,
         activeCollection,
         setActiveCollection,
+        isModalOpened,
+        setIsModalOpened,
+        collectionName,
+        setCollectionName,
+        collectionDescription,
+        setCollectionDescription,
+        editingCollection,
+        openModal,
+        handleEdit,
+        handleDelete,
+        handleSubmit,
       }}
     >
       {children}
