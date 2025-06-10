@@ -33,7 +33,7 @@ def create_entry_service(data: dict) -> Entry:
         if not collection:
             raise CollectionNotFound(id=collection_id)
         if str(collection.user_id) != str(user_id):
-            raise BusinessRuleViolation("You cannot assign a parent collection that belongs to another user.")
+            raise BusinessRuleViolation("You cannot assign a collection that belongs to another user.")
     try:
         entry = create_entry(data)
     except Exception as e:
