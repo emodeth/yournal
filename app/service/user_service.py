@@ -98,7 +98,7 @@ def get_collections_by_user_id(user_id: int, limit: int = None, offset: int = No
     if not user:
         raise UserNotFound(id=user_id)
 
-    collections = get_collections_by_filter(user_id=user.id, parent_id=None, limit=limit, offset=offset)
+    collections = get_collections_by_filter(user_id=user.id, limit=limit, offset=offset)
     if not collections:
         return []
 

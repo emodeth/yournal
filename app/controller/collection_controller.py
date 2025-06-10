@@ -3,8 +3,6 @@ from app.service.collection_service import (
     create_collection_service,
     get_all_collections_service,
     get_collection_by_id_service,
-    get_parent_collection_service,
-    get_child_collections_service,
     update_collection_service,
     delete_collection_service,
     get_collection_contents_service,
@@ -57,26 +55,26 @@ def delete_collection(collection_id):
         return jsonify(message=str(e)), 404
     
 
-@collection_bp.route("/<int:collection_id>/children", methods=["GET"])
-def get_child_collections(collection_id):
+# @collection_bp.route("/<int:collection_id>/children", methods=["GET"])
+# def get_child_collections(collection_id):
 
-    limit = request.args.get("limit", default=10, type=int)
-    offset = request.args.get("offset", default=0, type=int)
+#     limit = request.args.get("limit", default=10, type=int)
+#     offset = request.args.get("offset", default=0, type=int)
 
-    children = get_child_collections_service(collection_id, limit, offset)
-    result = [c.to_dict() for c in children]
-    return jsonify(result), 200
+#     children = get_child_collections_service(collection_id, limit, offset)
+#     result = [c.to_dict() for c in children]
+#     return jsonify(result), 200
 
 
-@collection_bp.route("/<int:collection_id>/parent", methods=["GET"])
-def get_parent_collection(collection_id):
-    try:
-        parent = get_parent_collection_service(collection_id)
-        if not parent:
-            return jsonify(message="No parent collection found"), 200
-        return jsonify(parent.to_dict()), 200
-    except ValueError as e:
-        return jsonify(message=str(e)), 404
+# @collection_bp.route("/<int:collection_id>/parent", methods=["GET"])
+# def get_parent_collection(collection_id):
+#     try:
+#         parent = get_parent_collection_service(collection_id)
+#         if not parent:
+#             return jsonify(message="No parent collection found"), 200
+#         return jsonify(parent.to_dict()), 200
+#     except ValueError as e:
+#         return jsonify(message=str(e)), 404
 
 
 @collection_bp.route("/<int:collection_id>/contents", methods=["GET"])
