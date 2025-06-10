@@ -34,8 +34,14 @@ def create_mood():
     data = request.get_json()
     mood_type = data.get("type")
     emoji = data.get("emoji")
+    mood_weight = data.get("mood_weight")
     try:
-        mood = create_mood_service(mood_type, emoji)
+        data = {
+            "type":mood_type,
+            "emoji":emoji,
+            "mood_weight":mood_weight
+        }
+        mood = create_mood_service(data)
         return jsonify(mood.to_dict()), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400

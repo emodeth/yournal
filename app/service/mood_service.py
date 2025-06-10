@@ -11,7 +11,7 @@ from app.repository.mood_repository import (
 )
 
 
-def create_mood_service(mood_type: str, emoji: Optional[str] = None) -> Mood:
+def create_mood_service(data) -> Mood:
     """
     Create a new mood if it doesn't already exist.
 
@@ -25,11 +25,10 @@ def create_mood_service(mood_type: str, emoji: Optional[str] = None) -> Mood:
     Returns:
         Mood: The created Mood instance.
     """
+    mood_type = data.get("type")
     if get_mood_by_type(mood_type):
         raise ValueError(f"Mood '{mood_type}' already exists.")
-    
-    data = {"type":mood_type, "emoji":emoji }
-    
+        
     new_mood = create_mood(data)
     if not new_mood:
         raise ValueError("Failed to create mood due to database error.")
@@ -89,7 +88,7 @@ def update_mood_service(mood_id: int, **kwargs) -> Optional[Mood]:
     Returns:
         Optional[Mood]: Updated Mood instance, or None if not found.
     """
-    allowed_fields = {'type', 'emoji'}
+    allowed_fields = {'type', 'emoji',"mood_weight"}
     updates = {k: v for k, v in kwargs.items() if k in allowed_fields and v is not None}
 
     if not updates:
