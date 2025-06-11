@@ -4,9 +4,12 @@ __pycache__/
 *.pyd
 *.db
 *.sqlite3
+
+# Secrets
 .env
 .env.prod
 .env.*
+
 .git
 .gitignore
 *.log

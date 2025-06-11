@@ -26,6 +26,6 @@ dist-ssr
 # Password for docker postgres
 /db
 .env*
-migrations
+.env.prod
 **/__pycache__
 *.pyc
