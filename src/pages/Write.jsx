@@ -27,8 +27,7 @@ function Write() {
     activeEntry,
     setActiveEntry,
     setInitialContent,
-    isDeleteModalOpened,
-    setIsDeleteModalOpened,
+    setSelectedMoodScore,
   } = useEditor();
 
   const { id } = useParams();
@@ -40,20 +39,15 @@ function Write() {
     setTitle(activeEntry.title);
     setSelectedCollection(collection);
     setSelectedMood(mood);
+    setSelectedMoodScore([activeEntry.entry_mood_score]);
+    setCover(activeEntry.cover_image);
   }
 
   function clearEntry() {
     setTitle("");
     setCover("");
     setSelectedMood("");
-  }
-
-  function deleteEntry() {
-    console.log("deleted");
-  }
-
-  function handleSkip() {
-    setIsDeleteModalOpened(false);
+    setSelectedMoodScore([5]);
   }
 
   useEffect(() => {
@@ -86,14 +80,6 @@ function Write() {
     <div className="min-h-screen bg-white flex">
       <Sidebar />
       <Editor />
-
-      {isDeleteModalOpened && (
-        <DeleteModal
-          setIsModalOpened={setIsDeleteModalOpened}
-          handleSuccess={deleteEntry}
-          handleSkip={handleSkip}
-        />
-      )}
 
       {showCollectionSelector && (
         <div

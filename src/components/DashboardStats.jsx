@@ -1,6 +1,25 @@
 import { BookOpen, Calendar, TrendingUp, User } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-function DashboardStats() {
+function DashboardStats({ dashboardData }) {
+  function formatStreakString(streakDays) {
+    if (streakDays === 0) {
+      return "0";
+    } else if (streakDays === 1) {
+      return "1 Day";
+    } else {
+      return `${streakDays} Days`;
+    }
+  }
+
+  function handleMood(averageMood) {
+    if (averageMood === null) {
+      return 0;
+    } else {
+      return averageMood;
+    }
+  }
+
   function renderStatItem(title, Icon, bgColor, iconColor, count) {
     return (
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
@@ -12,7 +31,11 @@ function DashboardStats() {
           </div>
           <div className="ml-4">
             <p className="text-sm font-medium text-gray-600">{title}</p>
-            <p className="text-2xl font-bold text-gray-900">{count}</p>
+            {count !== null ? (
+              <p className="text-2xl font-bold text-gray-900">{count}</p>
+            ) : (
+              <Skeleton className="h-[20px] w-[50px] mt-2" />
+            )}
           </div>
         </div>
       </div>
@@ -26,7 +49,7 @@ function DashboardStats() {
         BookOpen,
         "text-blue-100",
         "text-blue-600",
-        0
+        dashboardData?.total_entries
       )}
 
       {renderStatItem(
@@ -34,21 +57,21 @@ function DashboardStats() {
         TrendingUp,
         "bg-green-100",
         "text-green-600",
-        0
+        handleMood(dashboardData?.average_mood)
       )}
       {renderStatItem(
         "Collections",
         Calendar,
         "bg-purple-100",
         "text-purple-600",
-        0
+        dashboardData?.total_collections
       )}
       {renderStatItem(
         "Streak",
         User,
         "bg-orange-100",
         "text-orange-600",
-        "7 Days"
+        formatStreakString(dashboardData?.streak_days)
       )}
     </div>
   );

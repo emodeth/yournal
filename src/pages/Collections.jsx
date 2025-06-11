@@ -6,10 +6,24 @@ import Navbar from "../components/Navbar";
 import { useAuth } from "../contexts/AuthContext";
 import { useCollections } from "../contexts/CollectionsContext";
 import CollectionModal from "../components/CollectionModal";
+import DeleteModal from "../components/DeleteModal";
+import { useState } from "react";
 
 function Collections() {
   const { user } = useAuth();
-  const { isModalOpened } = useCollections();
+  const { isModalOpened, handleDelete } = useCollections();
+
+  const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
+
+  function _handleDelete() {
+    handleDelete(deleteItemId, user?.id);
+    setIsDeleteModalOpened(false);
+  }
+
+  function handleSkip() {
+    setIsDeleteModalOpened(false);
+  }
 
   return user === undefined ? (
     <Loader />
@@ -18,8 +32,18 @@ function Collections() {
       <Navbar />
       <MaxWidthWrapper className={"py-8"}>
         <CollectionsHeader />
-        <CollectionsGrid />
+        <CollectionsGrid
+          setDeleteItemId={setDeleteItemId}
+          setIsDeleteModalOpened={setIsDeleteModalOpened}
+        />
         {isModalOpened && <CollectionModal />}
+        {isDeleteModalOpened && (
+          <DeleteModal
+            setIsModalOpened={setIsDeleteModalOpened}
+            handleSkip={handleSkip}
+            handleSuccess={_handleDelete}
+          />
+        )}
       </MaxWidthWrapper>
     </div>
   );

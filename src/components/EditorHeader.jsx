@@ -4,6 +4,7 @@ import CollectionSelector from "./CollectionSelector";
 import MoodSelector from "./MoodSelector";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router";
+import EntryMoodSelector from "./EntryMoodSelector";
 
 function EditorHeader() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ function EditorHeader() {
     editor,
     selectedMood,
     selectedCollection,
+    selectedMoodScore,
+    cover,
   } = useEditor();
 
   const { id } = useParams();
@@ -44,6 +47,7 @@ function EditorHeader() {
         </h2>
         <CollectionSelector />
         <MoodSelector />
+        <EntryMoodSelector />
       </div>
       <button
         onClick={() =>
@@ -53,19 +57,18 @@ function EditorHeader() {
                 user.id,
                 title,
                 editor.document,
-                "image_url",
+                cover,
                 selectedMood.id,
-
-                5,
+                selectedMoodScore?.at(0),
                 selectedCollection.id
               )
             : handleCreateEntry(
                 user.id,
                 title,
                 editor.document,
-                "image_url",
+                cover,
                 selectedMood.id,
-                5,
+                selectedMoodScore?.at(0),
                 selectedCollection.id,
                 navigate
               )
