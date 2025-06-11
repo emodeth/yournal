@@ -9,17 +9,16 @@ from app.models.users import User
 from app.models.entries import Entry
 from app.repository.user_analytics import  create_or_update_user_analytics
 from werkzeug.security import generate_password_hash
+from app.service.user_service import create_user_service
 
 
 def seed_user_and_entries():
     # 1. Create test user
-    test_user = User(
-        email="test2@test.com",
-        name="test2 test",
-        pwd_hash=generate_password_hash("test"),
-    )
-    db.session.add(test_user)
-    db.session.commit()
+    data = {
+        "email":"test3@test.com",
+        "password":"test"
+    }
+    test_user = create_user_service(data)
 
     user_id = test_user.id
     print(f"Created user with ID: {user_id}")
