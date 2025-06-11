@@ -4,12 +4,22 @@ import SidebarCollectionItem from "./SidebarCollectionItem";
 import { useState } from "react";
 import { createCollection, getCollectionsByUserId } from "../api/collections";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router";
+import { useEditor } from "../contexts/EditorContext";
 
 function SidebarContent() {
   const { user } = useAuth();
   const { collections, setCollections } = useCollections();
   const [showNewCollection, setShowNewCollection] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
+  const { setSelectedCollection } = useEditor();
+
+  const navigate = useNavigate();
+
+  async function handleNewEntry() {
+    setSelectedCollection(null);
+    navigate("/write");
+  }
 
   async function handleGetCollections(userId) {
     if (userId) {
@@ -27,7 +37,10 @@ function SidebarContent() {
 
   return (
     <div className="flex-1 overflow-y-auto p-2">
-      <button className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors mb-2">
+      <button
+        onClick={handleNewEntry}
+        className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors mb-2"
+      >
         <Plus size={16} />
         <span>New Entry</span>
       </button>

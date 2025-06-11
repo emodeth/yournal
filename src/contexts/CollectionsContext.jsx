@@ -104,6 +104,7 @@ export function CollectionsProvider({ children }) {
         handleDelete,
         handleSubmit,
         collectionIds,
+        handleGetCollections,
       }}
     >
       {children}

@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { getEntriesByCollectionId } from "../api/entries";
 import { useEditor } from "../contexts/EditorContext";
 import { Plus, ChevronDown, ChevronRight, Folder } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
@@ -12,17 +10,7 @@ function SidebarCollectionItem({ collection }) {
   const { allMoods } = useMood();
   const { expandedCollections, setExpandedCollections, setSelectedCollection } =
     useEditor();
-  const [entries, setEntries] = useState(null);
   const navigate = useNavigate();
-
-  async function handleCollectionEntries(collectionId) {
-    const data = await getEntriesByCollectionId(collectionId);
-    setEntries(data.entries);
-  }
-
-  useEffect(() => {
-    handleCollectionEntries(collection.id);
-  }, [collection]);
 
   const toggleCollection = (collectionId) => {
     const newExpanded = new Set(expandedCollections);
@@ -36,6 +24,11 @@ function SidebarCollectionItem({ collection }) {
 
   function handleEntryClick(entry) {
     navigate(`/write/${entry.id}`);
+  }
+
+  function handleEntryCreateOnCollection() {
+    setSelectedCollection(collection);
+    navigate(`/write/`);
   }
 
   function renderCollectionHeader() {
@@ -63,6 +56,7 @@ function SidebarCollectionItem({ collection }) {
         <button
           className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-gray-600 transition-all"
           title="New entry in this collection"
+          onClick={handleEntryCreateOnCollection}
         >
           <Plus size={12} />
         </button>
@@ -74,8 +68,8 @@ function SidebarCollectionItem({ collection }) {
     return (
       expandedCollections.has(collection.id) && (
         <div className="ml-6 space-y-0.5">
-          {entries &&
-            entries.map((entry) => (
+          {collection &&
+            collection.entries.map((entry) => (
               <button
                 onClick={() => handleEntryClick(entry)}
                 key={entry.id}

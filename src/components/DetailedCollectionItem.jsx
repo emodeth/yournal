@@ -1,20 +1,26 @@
 import { format } from "date-fns";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getMoodById } from "../api/moods";
-import { getContentSubstring, getMoodText } from "../lib/utils";
+import { getMoodByMoodId, getMoodText } from "../lib/utils";
+import { useMood } from "../contexts/MoodContext";
+import { deleteEntry } from "../api/entries";
+import { useParams } from "react-router";
 
-function DetailedCollectionItem({ item }) {
+function DetailedCollectionItem({ item, getContent }) {
+  const { id } = useParams();
+
   const [mood, setMood] = useState(null);
-
+  const { allMoods } = useMood();
   useEffect(() => {
-    async function getMood() {
-      const data = await getMoodById(item.mood_id);
-      setMood(data);
+    if (allMoods) {
+      setMood(getMoodByMoodId(allMoods, item?.mood_id));
     }
+  }, [allMoods]);
 
-    getMood();
-  }, []);
+  async function handleDelete() {
+    await deleteEntry(item?.id);
+    await getContent(id);
+  }
 
   return (
     mood && (
@@ -42,7 +48,10 @@ function DetailedCollectionItem({ item }) {
           </div>
 
           <div className="flex space-x-2">
-            <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
+            <button
+              onClick={handleDelete}
+              className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+            >
               <Trash2 size={16} />
             </button>
           </div>

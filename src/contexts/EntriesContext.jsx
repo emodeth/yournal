@@ -11,7 +11,6 @@ export function EntriesProvider({ children }) {
   async function handleGetEntries(collectionIds) {
     if (collectionIds) {
       const data = await getEntriesByCollectionIds(collectionIds);
-      console.log(data);
       setEntries(data);
     }
   }
