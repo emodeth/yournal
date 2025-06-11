@@ -3,6 +3,7 @@ from app.core.extensions import db
 from app.models import User, Entry, Collection, UserAnalytics
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
+from datetime import datetime, timedelta, timezone
 
 
 def get_user_by_id(user_id:int) -> Optional[User]:
@@ -71,9 +72,30 @@ def get_average_mood_score_by_user_id(user_id: int) -> float | None:
 
 
 def get_streak_day_count_by_user_id(user_id: int) -> int:
-    return (
+    dates = (
         db.session.query(UserAnalytics.date)
         .filter(UserAnalytics.user_id == user_id)
         .distinct()
-        .count()
+        .order_by(UserAnalytics.date.desc())
+        .all()
     )
+
+    date_list = [d[0] for d in dates]
+    if not date_list:
+        return 0
+
+    streak = 0
+    current_date = datetime.now(timezone.utc).date() - timedelta(days=1)
+
+    for day in date_list:
+
+        if day == current_date:
+            streak += 1
+            current_date -= timedelta(days=1)
+        elif day == current_date + timedelta(days=1):  # Covers the case where today *is* used
+            streak += 1
+            current_date = day - timedelta(days=1)
+        else:
+            break
+
+    return streak
