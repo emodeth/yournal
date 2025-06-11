@@ -11,10 +11,10 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install required system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential gcc libpq-dev curl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y \
+#     build-essential gcc libpq-dev curl \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
 
 # Add a non-privileged user
 ARG UID=10001
@@ -33,8 +33,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
-COPY . .
-
+COPY app/ ./app
+COPY entrypoint.sh .
+COPY migrations/ ./migrations
+COPY requirements.txt .
 # Ensure entrypoint is executable
 RUN chmod u+x ./entrypoint.sh
 
