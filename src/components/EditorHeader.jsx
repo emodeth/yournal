@@ -3,9 +3,11 @@ import { useEditor } from "../contexts/EditorContext";
 import CollectionSelector from "./CollectionSelector";
 import MoodSelector from "./MoodSelector";
 import { useAuth } from "../contexts/AuthContext";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 function EditorHeader() {
+  const navigate = useNavigate();
+
   const { user } = useAuth();
   const {
     title,
@@ -63,9 +65,9 @@ function EditorHeader() {
                 editor.document,
                 "image_url",
                 selectedMood.id,
-
                 5,
-                selectedCollection.id
+                selectedCollection.id,
+                navigate
               )
         }
         className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

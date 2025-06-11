@@ -31,13 +31,13 @@ function DetailedCollection() {
     getCollection();
   }, [id]);
 
-  useEffect(() => {
-    async function getContent() {
-      const data = await getCollectionContent(id);
-      setCollectionContent(data);
-    }
+  async function getContent(id) {
+    const data = await getCollectionContent(id);
+    setCollectionContent(data);
+  }
 
-    getContent();
+  useEffect(() => {
+    getContent(id);
   }, [id]);
 
   function renderCollectionHeader() {
@@ -204,7 +204,11 @@ function DetailedCollection() {
         {renderFilters()}
         <div className="space-y-6">
           {collectionContent?.entries.map((item) => (
-            <DetailedCollectionItem item={item} key={item.id} />
+            <DetailedCollectionItem
+              item={item}
+              key={item.id}
+              getContent={getContent}
+            />
           ))}
         </div>
       </MaxWidthWrapper>

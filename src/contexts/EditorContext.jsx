@@ -1,6 +1,8 @@
 import { BlockNoteEditor } from "@blocknote/core";
 import { createContext, useContext, useMemo, useRef, useState } from "react";
 import { createEntry, updateEntry } from "../api/entries";
+import { useCollections } from "./CollectionsContext";
+import { useAuth } from "./AuthContext";
 
 const EditorContext = createContext();
 
@@ -9,11 +11,10 @@ export function EditorProvider({ children }) {
 
   const [sidebarOpened, setSidebarOpened] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [expandedCollections, setExpandedCollections] = useState(
-    new Set([1, 2, 3])
-  );
+  const [expandedCollections, setExpandedCollections] = useState(new Set());
 
   //editor
+  const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [initialContent, setInitialContent] = useState("loading");
   const [activeEntry, setActiveEntry] = useState();
 
@@ -32,6 +33,9 @@ export function EditorProvider({ children }) {
   const [showMoodSelector, setShowMoodSelector] = useState(false);
   const [selectedMood, setSelectedMood] = useState(null);
 
+  const { handleGetCollections } = useCollections();
+  const { user } = useAuth();
+
   async function handleCreateEntry(
     userId,
     title,
@@ -39,7 +43,8 @@ export function EditorProvider({ children }) {
     coverImg,
     moodId,
     entryMoodScore,
-    collectionId
+    collectionId,
+    navigate
   ) {
     const data = await createEntry(
       userId,
@@ -50,8 +55,9 @@ export function EditorProvider({ children }) {
       entryMoodScore,
       collectionId
     );
-
-    console.log(data);
+    handleGetCollections(user?.id);
+    navigate(`/write/${data.entry_id}`);
+    return data;
   }
 
   async function handleUpdateEntry(
@@ -74,8 +80,9 @@ export function EditorProvider({ children }) {
       entryMoodScore,
       collectionId
     );
+    handleGetCollections(user?.id);
 
-    console.log(data);
+    return data;
   }
 
   return (
@@ -106,6 +113,8 @@ export function EditorProvider({ children }) {
         setActiveEntry,
         setInitialContent,
         handleUpdateEntry,
+        isDeleteModalOpened,
+        setIsDeleteModalOpened,
       }}
     >
       {children}

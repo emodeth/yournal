@@ -11,7 +11,6 @@ export async function getEntriesByCollectionIds(ids) {
       })
     );
     const results = await Promise.all(promises);
-    console.log("Tüm öğeler başarıyla çekildi:", results);
     return results;
   } catch (error) {
     console.error("Öğeleri çekerken bir hata oluştu:", error);
@@ -29,7 +28,6 @@ export async function getEntriesByCollectionId(collectionId) {
     });
 
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Öğeleri çekerken bir hata oluştu:", error);
@@ -47,7 +45,6 @@ export async function getEntryById(entryId) {
     });
 
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Öğeleri çekerken bir hata oluştu:", error);
@@ -120,7 +117,24 @@ export async function updateEntry(
     });
 
     const data = await res.json();
-    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Öğeleri çekerken bir hata oluştu:", error);
+    throw error;
+  }
+}
+
+export async function deleteEntry(entryId) {
+  try {
+    const res = await fetch(`${URL}/entries/${entryId}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
     return data;
   } catch (error) {
     console.error("Öğeleri çekerken bir hata oluştu:", error);
