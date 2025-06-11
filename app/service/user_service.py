@@ -7,10 +7,15 @@ from app.repository.user_repository import (
     get_all_users,
     get_user_by_email,
     create_user,
-    update_user
+    update_user,
+    get_average_mood_score_by_user_id,
+    get_total_collection_count_by_user_id,
+    get_total_entry_count_by_user_id,
+    get_streak_day_count_by_user_id
 )
 from app.repository.collection_repository import get_collections_by_filter
 from app.repository.entry_repository import get_entries_by_filter
+from app.repository.user_analytics import get_user_analytics_scores
 
 
 
@@ -146,3 +151,17 @@ def get_collections_by_user_id(user_id: int, limit: int = None, offset: int = No
         })
 
     return serialized
+
+def get_user_dashboard_data(user_id: int, days: int = 30):
+    user = get_user_by_id(user_id)
+    if not user:
+        raise UserNotFound(id=user_id)
+
+    data_points = get_user_analytics_scores(user_id=user_id, days=days)
+    return {
+        "chart_data": [{"date": d.isoformat(), "score": s} for d, s in data_points],
+        "total_entries": get_total_entry_count_by_user_id(user_id),
+        "total_collections": get_total_collection_count_by_user_id(user_id),
+        "average_mood": get_average_mood_score_by_user_id(user_id),
+        "streak_days": get_streak_day_count_by_user_id(user_id)
+    }
