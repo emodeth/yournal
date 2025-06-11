@@ -5,9 +5,11 @@ from app.service.user_service import (
     get_all_users_service,
     update_user_service,
     delete_user_service,
-    get_collections_by_user_id
+    get_collections_by_user_id,
+    get_user_dashboard_data
 )
 from app.service.entry_service import get_entries_by_user_service
+
 
 user_bp = Blueprint("user", __name__, url_prefix="/users")
 
@@ -90,3 +92,10 @@ def get_collections_by_user(user_id):
         return jsonify(collections), 200
     except ValueError as e:
         return jsonify(error=str(e)), 404
+    
+
+@user_bp.route("/<int:user_id>/dashboard", methods=["GET"])
+def get_analytics_by_user(user_id):
+    days = request.args.get("days", default=30, type=int)
+    data = get_user_dashboard_data(user_id, days)
+    return jsonify(data)

@@ -1,7 +1,9 @@
 from typing import List, Optional
-from sqlalchemy.exc import SQLAlchemyError
 from app.core.extensions import db
-from app.models.users import User
+from app.models import User, Entry, Collection, UserAnalytics
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import func
+
 
 def get_user_by_id(user_id:int) -> Optional[User]:
     return User.query.get(user_id)
@@ -50,3 +52,28 @@ def delete_user(user_id: int) -> bool:
     except SQLAlchemyError:
         db.session.rollback()
         return False
+    
+def get_total_entry_count_by_user_id(user_id: int) -> int:
+    return db.session.query(Entry).filter(Entry.user_id == user_id).count()
+
+def get_total_collection_count_by_user_id(user_id: int) -> int:
+    return db.session.query(Collection).filter(Collection.user_id == user_id).count()
+
+
+def get_average_mood_score_by_user_id(user_id: int) -> float | None:
+    result = (
+        db.session.query(func.avg(UserAnalytics.average_score))
+        .filter(UserAnalytics.user_id == user_id)
+        .scalar()
+    )
+    return round(result, 2) if result is not None else None
+
+
+
+def get_streak_day_count_by_user_id(user_id: int) -> int:
+    return (
+        db.session.query(UserAnalytics.date)
+        .filter(UserAnalytics.user_id == user_id)
+        .distinct()
+        .count()
+    )

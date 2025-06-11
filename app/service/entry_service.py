@@ -1,8 +1,9 @@
-from typing import Optional, List
+from typing import List
 from app.models.entries import Entry
 from app.core.exceptions import EntryNotFound, UserNotFound, CollectionNotFound, BusinessRuleViolation
 from app.repository.user_repository import get_user_by_id
 from app.repository.collection_repository import get_collection_by_id
+from app.repository.user_analytics import create_or_update_user_analytics, update_user_analytics_on_entry_update
 from app.repository.entry_repository import (
     get_all_entries,
     get_entry_by_id,
@@ -43,6 +44,7 @@ def create_entry_service(data: dict) -> Entry:
 
     try:
         entry = create_entry(data)
+        create_or_update_user_analytics(entry=entry)
     except Exception as e:
         raise ValueError(f"Database error: {str(e)}")
 
@@ -116,7 +118,7 @@ def update_entry_service(entry_id: int, **kwargs) -> Entry:
     """
     allowed_fields = {
         'title', 'content', 'cover_image', 'mood_id', 'moodScore',
-        'collection_id', 'is_draft', 'user_id'
+        'collection_id', 'is_draft', 'user_id','entry_mood_score'
     }
 
     updates = {k: v for k, v in kwargs.items() if k in allowed_fields and v is not None}
@@ -136,6 +138,9 @@ def update_entry_service(entry_id: int, **kwargs) -> Entry:
     updated = update_entry(entry_id, updates)
     if not updated:
         raise ValueError(f"Failed to update entry with ID {entry_id}")
+    
+    update_user_analytics_on_entry_update(updated, updates)
+
     return updated
 
 
