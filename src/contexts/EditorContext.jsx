@@ -14,7 +14,6 @@ export function EditorProvider({ children }) {
   const [expandedCollections, setExpandedCollections] = useState(new Set());
 
   //editor
-  const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [initialContent, setInitialContent] = useState("loading");
   const [activeEntry, setActiveEntry] = useState();
 
@@ -32,6 +31,8 @@ export function EditorProvider({ children }) {
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [showMoodSelector, setShowMoodSelector] = useState(false);
   const [selectedMood, setSelectedMood] = useState(null);
+  const [selectedMoodScore, setSelectedMoodScore] = useState([5]);
+  const [showChangeCover, setShowChangeCover] = useState(false);
 
   const { handleGetCollections } = useCollections();
   const { user } = useAuth();
@@ -113,8 +114,10 @@ export function EditorProvider({ children }) {
         setActiveEntry,
         setInitialContent,
         handleUpdateEntry,
-        isDeleteModalOpened,
-        setIsDeleteModalOpened,
+        selectedMoodScore,
+        setSelectedMoodScore,
+        showChangeCover,
+        setShowChangeCover,
       }}
     >
       {children}

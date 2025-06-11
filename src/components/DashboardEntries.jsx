@@ -1,7 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { format } from "date-fns";
+import { useAuth } from "../contexts/AuthContext";
+import { getUserEntries } from "../api/entries";
 
 function DashboardEntries() {
+  const { user } = useAuth();
   const [sortBy, setSortBy] = useState("date");
+  const [userEntries, setUserEntries] = useState(null);
+  const navigate = useNavigate();
+
+  async function handleGetUserEntries() {
+    if (user) {
+      const data = await getUserEntries(user?.id);
+      setUserEntries(data);
+    }
+  }
+
+  useEffect(() => {
+    handleGetUserEntries();
+  }, [user]);
 
   return (
     <div className="mt-8 bg-white rounded-lg p-6 shadow-sm border border-gray-200">
@@ -17,22 +35,25 @@ function DashboardEntries() {
         </select>
       </div>
 
-      {true ? (
+      {userEntries ? (
         <div className="space-y-4">
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl">{"😎"}</div>
-            <div className="flex-1">
-              <h3 className="font-medium text-gray-900">
-                {"valorant neden kötüdür"}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {"genel koleksiyonen"} • {"11 Nisan 2025"}
-              </p>
-              <p className="text-sm text-gray-700 mt-1 line-clamp-2">
-                {"herhangi bir şeyler yazı falan filan fişman "}...
-              </p>
+          {userEntries.slice(0, 10).map((entry) => (
+            <div
+              role="button"
+              onClick={() => navigate(`/write/${entry.id}`)}
+              key={entry.id}
+              className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer"
+            >
+              <div className="text-2xl">{"😎"}</div>
+              <div className="flex-1">
+                <h3 className="font-medium text-gray-900">{entry.title}</h3>
+                <p className="text-sm text-gray-500">
+                  {`Mood Score: ${entry.entry_mood_score}`} •{" "}
+                  {format(new Date(entry.created_at).toISOString(), "MMM dd")}
+                </p>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       ) : (
         <p className="text-center text-gray-500 py-8">

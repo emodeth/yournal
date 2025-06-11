@@ -25,6 +25,6 @@ export function getContentSubstring(content: string) {
 }
 
 export function getMoodByMoodId(allMoods: any, moodId: number) {
-  const mood = allMoods.find((item) => item.id === moodId);
+  const mood = allMoods?.find((item) => item.id === moodId);
   return mood;
 }

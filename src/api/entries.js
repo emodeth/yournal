@@ -124,10 +124,48 @@ export async function updateEntry(
   }
 }
 
+export async function updateEntryCover(entryId, coverImg) {
+  try {
+    const res = await fetch(`${URL}/entries/${entryId}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cover_image: coverImg,
+      }),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Öğeleri çekerken bir hata oluştu:", error);
+    throw error;
+  }
+}
+
 export async function deleteEntry(entryId) {
   try {
     const res = await fetch(`${URL}/entries/${entryId}`, {
       method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Öğeleri çekerken bir hata oluştu:", error);
+    throw error;
+  }
+}
+
+export async function getUserEntries(userId) {
+  try {
+    const res = await fetch(`${URL}/users/${userId}/entries`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",

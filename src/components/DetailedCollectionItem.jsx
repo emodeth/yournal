@@ -3,12 +3,13 @@ import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getMoodByMoodId, getMoodText } from "../lib/utils";
 import { useMood } from "../contexts/MoodContext";
-import { deleteEntry } from "../api/entries";
 import { useParams } from "react-router";
 
-function DetailedCollectionItem({ item, getContent }) {
-  const { id } = useParams();
-
+function DetailedCollectionItem({
+  item,
+  setDeleteItemId,
+  setIsDeleteModalOpened,
+}) {
   const [mood, setMood] = useState(null);
   const { allMoods } = useMood();
   useEffect(() => {
@@ -16,11 +17,6 @@ function DetailedCollectionItem({ item, getContent }) {
       setMood(getMoodByMoodId(allMoods, item?.mood_id));
     }
   }, [allMoods]);
-
-  async function handleDelete() {
-    await deleteEntry(item?.id);
-    await getContent(id);
-  }
 
   return (
     mood && (
@@ -49,7 +45,10 @@ function DetailedCollectionItem({ item, getContent }) {
 
           <div className="flex space-x-2">
             <button
-              onClick={handleDelete}
+              onClick={() => {
+                setIsDeleteModalOpened(true);
+                setDeleteItemId(item.id);
+              }}
               className="p-2 text-gray-400 hover:text-red-600 transition-colors"
             >
               <Trash2 size={16} />

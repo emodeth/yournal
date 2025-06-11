@@ -9,6 +9,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { getCollectionById, getCollectionContent } from "../api/collections";
 import { useCollections } from "../contexts/CollectionsContext";
 import DetailedCollectionItem from "../components/DetailedCollectionItem";
+import DeleteModal from "../components/DeleteModal";
+import { deleteEntry } from "../api/entries";
 
 function DetailedCollection() {
   const { id } = useParams();
@@ -21,6 +23,19 @@ function DetailedCollection() {
 
   const [collection, setCollection] = useState(null);
   const [collectionContent, setCollectionContent] = useState(null);
+
+  const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
+
+  async function handleDelete() {
+    await deleteEntry(deleteItemId);
+    await getContent(id);
+    setIsDeleteModalOpened(false);
+  }
+
+  function handleSkip() {
+    setIsDeleteModalOpened(false);
+  }
 
   useEffect(() => {
     async function getCollection() {
@@ -198,6 +213,14 @@ function DetailedCollection() {
     <Loader />
   ) : (
     <div className="min-h-screen bg-[#f9fafb]">
+      {isDeleteModalOpened && (
+        <DeleteModal
+          setIsModalOpened={setIsDeleteModalOpened}
+          handleSuccess={handleDelete}
+          handleSkip={handleSkip}
+        />
+      )}
+
       <Navbar />
       <MaxWidthWrapper className={"py-8"}>
         {renderCollectionHeader()}
@@ -207,7 +230,8 @@ function DetailedCollection() {
             <DetailedCollectionItem
               item={item}
               key={item.id}
-              getContent={getContent}
+              setDeleteItemId={setDeleteItemId}
+              setIsDeleteModalOpened={setIsDeleteModalOpened}
             />
           ))}
         </div>
