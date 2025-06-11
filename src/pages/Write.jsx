@@ -8,13 +8,14 @@ import { useEffect } from "react";
 import { getEntryById } from "../api/entries";
 import { getMoodByMoodId } from "../lib/utils";
 import { useMood } from "../contexts/MoodContext";
+import { getCollectionById } from "../api/collections";
+import DeleteModal from "../components/DeleteModal";
 
 function Write() {
   const { user } = useAuth();
   const { allMoods } = useMood();
   const {
     editor,
-    title,
     setTitle,
     setCover,
     setSelectedMood,
@@ -26,15 +27,18 @@ function Write() {
     activeEntry,
     setActiveEntry,
     setInitialContent,
+    isDeleteModalOpened,
+    setIsDeleteModalOpened,
   } = useEditor();
 
   const { id } = useParams();
 
-  function handleDisplayEntry() {
-    const mood = getMoodByMoodId(allMoods, activeEntry.mood_id);
+  async function handleDisplayEntry() {
+    const mood = await getMoodByMoodId(allMoods, activeEntry.mood_id);
+    const collection = await getCollectionById(activeEntry.collection_id);
 
     setTitle(activeEntry.title);
-    setSelectedCollection(activeEntry.collection_id);
+    setSelectedCollection(collection);
     setSelectedMood(mood);
   }
 
@@ -42,7 +46,14 @@ function Write() {
     setTitle("");
     setCover("");
     setSelectedMood("");
-    setSelectedCollection("");
+  }
+
+  function deleteEntry() {
+    console.log("deleted");
+  }
+
+  function handleSkip() {
+    setIsDeleteModalOpened(false);
   }
 
   useEffect(() => {
@@ -65,10 +76,6 @@ function Write() {
     }
   }, [activeEntry]);
 
-  useEffect(() => {
-    console.log(editor?.document);
-  }, [title]);
-
   if (editor === undefined) {
     return <Loader />;
   }
@@ -79,6 +86,14 @@ function Write() {
     <div className="min-h-screen bg-white flex">
       <Sidebar />
       <Editor />
+
+      {isDeleteModalOpened && (
+        <DeleteModal
+          setIsModalOpened={setIsDeleteModalOpened}
+          handleSuccess={deleteEntry}
+          handleSkip={handleSkip}
+        />
+      )}
 
       {showCollectionSelector && (
         <div
