@@ -141,7 +141,8 @@ def get_collections_by_user_id(user_id: int, limit: int = None, offset: int = No
             "name": c.name,
             "description": c.description,
             "entry_count": entry_count,
-            "latest_entry": latest_entry
+            "latest_entry": latest_entry,
+            "entries":[e.to_dict() for e in entries]
         })
 
     return serialized
