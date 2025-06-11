@@ -6,6 +6,7 @@ from sqlalchemy import func
 from datetime import datetime, timedelta, timezone
 
 
+
 def get_user_by_id(user_id:int) -> Optional[User]:
     return User.query.get(user_id)
 
@@ -68,7 +69,6 @@ def get_average_mood_score_by_user_id(user_id: int) -> float | None:
         .scalar()
     )
     return round(result, 2) if result is not None else None
-
 
 
 def get_streak_day_count_by_user_id(user_id: int) -> int:
