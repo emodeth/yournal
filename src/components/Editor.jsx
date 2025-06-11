@@ -25,7 +25,7 @@ function Editor({ classNameEditor, classNameTitle }) {
   }
 
   return (
-    <div className="flex flex-col overflow-y-auto">
+    <div className="flex flex-col overflow-y-auto flex-1">
       <EditorHeader />
       <div>
         <EditorCover />

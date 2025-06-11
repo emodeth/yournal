@@ -47,12 +47,6 @@ function DetailedCollectionItem({ item }) {
             </button>
           </div>
         </div>
-
-        <div className="prose max-w-none">
-          <p className="text-gray-700 whitespace-pre-wrap">
-            {getContentSubstring(item.content.Content)}
-          </p>
-        </div>
       </div>
     )
   );

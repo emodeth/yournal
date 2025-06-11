@@ -1,17 +1,112 @@
-import { useCreateBlockNote } from "@blocknote/react";
-import { createContext, useContext, useRef, useState } from "react";
+import { BlockNoteEditor } from "@blocknote/core";
+import { createContext, useContext, useMemo, useRef, useState } from "react";
+import { createEntry, updateEntry } from "../api/entries";
 
 const EditorContext = createContext();
 
 export function EditorProvider({ children }) {
+  //sidebar
+
+  const [sidebarOpened, setSidebarOpened] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [expandedCollections, setExpandedCollections] = useState(
+    new Set([1, 2, 3])
+  );
+
+  //editor
+  const [initialContent, setInitialContent] = useState("loading");
+  const [activeEntry, setActiveEntry] = useState();
+
+  const editor = useMemo(() => {
+    if (initialContent === "loading") {
+      return undefined;
+    }
+    return BlockNoteEditor.create({ initialContent });
+  }, [initialContent]);
+
   const [title, setTitle] = useState("");
-  const editor = useCreateBlockNote();
   const titleRef = useRef();
   const [cover, setCover] = useState(null);
+  const [showCollectionSelector, setShowCollectionSelector] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState(null);
+  const [showMoodSelector, setShowMoodSelector] = useState(false);
+  const [selectedMood, setSelectedMood] = useState(null);
+
+  async function handleCreateEntry(
+    userId,
+    title,
+    content,
+    coverImg,
+    moodId,
+    entryMoodScore,
+    collectionId
+  ) {
+    const data = await createEntry(
+      userId,
+      title,
+      content,
+      coverImg,
+      moodId,
+      entryMoodScore,
+      collectionId
+    );
+
+    console.log(data);
+  }
+
+  async function handleUpdateEntry(
+    entryId,
+    userId,
+    title,
+    content,
+    coverImg,
+    moodId,
+    entryMoodScore,
+    collectionId
+  ) {
+    const data = await updateEntry(
+      entryId,
+      userId,
+      title,
+      content,
+      coverImg,
+      moodId,
+      entryMoodScore,
+      collectionId
+    );
+
+    console.log(data);
+  }
 
   return (
     <EditorContext.Provider
-      value={{ editor, titleRef, title, setTitle, cover, setCover }}
+      value={{
+        editor,
+        titleRef,
+        title,
+        setTitle,
+        cover,
+        setCover,
+        sidebarOpened,
+        setSidebarOpened,
+        searchTerm,
+        setSearchTerm,
+        expandedCollections,
+        setExpandedCollections,
+        showCollectionSelector,
+        setShowCollectionSelector,
+        selectedCollection,
+        setSelectedCollection,
+        showMoodSelector,
+        setShowMoodSelector,
+        selectedMood,
+        setSelectedMood,
+        handleCreateEntry,
+        activeEntry,
+        setActiveEntry,
+        setInitialContent,
+        handleUpdateEntry,
+      }}
     >
       {children}
     </EditorContext.Provider>
