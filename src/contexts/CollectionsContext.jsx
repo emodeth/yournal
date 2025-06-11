@@ -1,14 +1,16 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import {
   createCollection,
   updateCollection,
   getCollectionsByUserId,
   deleteCollection,
 } from "../api/collections";
+import { useAuth } from "./AuthContext";
 
 const CollectionsContext = createContext();
 
 export function CollectionsProvider({ children }) {
+  const { user } = useAuth();
   const [collections, setCollections] = useState(null);
   const [activeCollection, setActiveCollection] = useState(null);
   const [isModalOpened, setIsModalOpened] = useState(false);
@@ -17,12 +19,25 @@ export function CollectionsProvider({ children }) {
   const [collectionName, setCollectionName] = useState("");
   const [collectionDescription, setCollectionDescription] = useState("");
 
+  const [collectionIds, setCollectionIds] = useState(null);
+
+  useEffect(() => {
+    if (collections) {
+      const ids = collections.map((collection) => collection.id);
+      setCollectionIds(ids);
+    }
+  }, [collections]);
+
   async function handleGetCollections(userId) {
     if (userId) {
       const data = await getCollectionsByUserId(userId);
       setCollections(data);
     }
   }
+
+  useEffect(() => {
+    handleGetCollections(user?.id);
+  }, [user]);
 
   function resetModal() {
     setEditingCollection(null);
@@ -88,6 +103,7 @@ export function CollectionsProvider({ children }) {
         handleEdit,
         handleDelete,
         handleSubmit,
+        collectionIds,
       }}
     >
       {children}

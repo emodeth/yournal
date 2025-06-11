@@ -23,3 +23,8 @@ export function getMoodText(moodWeight: number) {
 export function getContentSubstring(content: string) {
   return content.substring(0, 30) + "...";
 }
+
+export function getMoodByMoodId(allMoods: any, moodId: number) {
+  const mood = allMoods.find((item) => item.id === moodId);
+  return mood;
+}

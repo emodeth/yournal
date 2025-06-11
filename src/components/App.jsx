@@ -28,6 +28,7 @@ function App() {
           <Route path="/collections" element={<Collections />} />
           <Route path="/collections/:id" element={<DetailedCollection />} />
           <Route path="/write" element={<Write />} />
+          <Route path="/write/:id" element={<Write />} />
         </Route>
       </Routes>
     </BrowserRouter>
