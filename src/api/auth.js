@@ -1,8 +1,8 @@
-const URL = "http://127.0.0.1:5000";
+const URL = "https://yournal-backend.onrender.com";
 
 export async function fetchUser(setUser) {
   try {
-    const res = await fetch(`${URL}/auth/me`, { credentials: "include" });
+    const res = await fetch(`${URL}/auth/me`, { credentials: "include", headers: {"Content-Type": "application/json"} });
     if (res.ok) {
       const data = await res.json();
       setUser(data);

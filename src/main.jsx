@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./components/App.jsx";
@@ -10,7 +9,6 @@ import { MoodProvider } from "./contexts/MoodContext.jsx";
 import { DashboardProvider } from "./contexts/DashboardContext.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
     <AuthProvider>
       <DashboardProvider>
         <CollectionsProvider>
@@ -24,5 +22,4 @@ createRoot(document.getElementById("root")).render(
         </CollectionsProvider>
       </DashboardProvider>
     </AuthProvider>
-  </StrictMode>
 );
