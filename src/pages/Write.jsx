@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Sidebar from "../components/Sidebar";
 import { useEditor } from "../contexts/EditorContext";
 import { useParams } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getEntryById } from "../api/entries";
 import { getMoodByMoodId } from "../lib/utils";
 import { useMood } from "../contexts/MoodContext";
@@ -12,6 +12,7 @@ import { getCollectionById } from "../api/collections";
 import DeleteModal from "../components/DeleteModal";
 
 function Write() {
+  const [loading, setLoading] = useState(null);
   const { user } = useAuth();
   const { allMoods } = useMood();
   const {
@@ -33,8 +34,10 @@ function Write() {
   const { id } = useParams();
 
   async function handleDisplayEntry() {
+    setLoading(true);
     const mood = await getMoodByMoodId(allMoods, activeEntry.mood_id);
     const collection = await getCollectionById(activeEntry.collection_id);
+    setLoading(false);
 
     setTitle(activeEntry.title);
     setSelectedCollection(collection);
@@ -71,6 +74,10 @@ function Write() {
   }, [activeEntry]);
 
   if (editor === undefined) {
+    return <Loader />;
+  }
+
+  if (loading) {
     return <Loader />;
   }
 
