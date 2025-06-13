@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getMoodByMoodId, getMoodText } from "../lib/utils";
+import { getMoodByMoodId } from "../lib/utils";
 import { useMood } from "../contexts/MoodContext";
 import { Link } from "react-router";
 
@@ -37,7 +37,7 @@ function DetailedCollectionItem({
                     )}
                   </span>
                   <span>•</span>
-                  <span>{mood?.type ? getMoodByMoodId(mood.type) : null}</span>
+                  <span>{mood?.type ? mood.type : null}</span>
                 </div>
               </div>
             </div>
