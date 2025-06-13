@@ -225,7 +225,7 @@ function DetailedCollection() {
       <MaxWidthWrapper className={"py-8"}>
         {renderCollectionHeader()}
         {renderFilters()}
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           {collectionContent?.entries ? (
             collectionContent.entries.map((item) => (
               <DetailedCollectionItem

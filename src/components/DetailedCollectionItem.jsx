@@ -44,7 +44,8 @@ function DetailedCollectionItem({
 
             <div className="flex space-x-2">
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   setIsDeleteModalOpened(true);
                   setDeleteItemId(item.id);
                 }}
