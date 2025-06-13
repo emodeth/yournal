@@ -47,6 +47,9 @@ export function EditorProvider({ children }) {
     collectionId,
     navigate
   ) {
+    if (!collectionId) return;
+    if (!moodId) return;
+
     const data = await createEntry(
       userId,
       title,
@@ -71,6 +74,9 @@ export function EditorProvider({ children }) {
     entryMoodScore,
     collectionId
   ) {
+    if (!collectionId) return;
+    if (!moodId) return;
+
     const data = await updateEntry(
       entryId,
       userId,

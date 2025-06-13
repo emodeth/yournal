@@ -84,23 +84,29 @@ function Write() {
   return user === undefined ? (
     <Loader />
   ) : (
-    <div className="min-h-screen bg-white flex">
-      <Sidebar />
-      <Editor />
+    <>
+      <div className="min-h-screen bg-white lg:flex hidden">
+        <Sidebar />
+        <Editor />
 
-      {showCollectionSelector && (
-        <div
-          className="fixed inset-0 z-[1000]"
-          onClick={() => setShowCollectionSelector(false)}
-        />
-      )}
-      {showMoodSelector && (
-        <div
-          className="fixed inset-0 z-[1000]"
-          onClick={() => setShowMoodSelector(false)}
-        />
-      )}
-    </div>
+        {showCollectionSelector && (
+          <div
+            className="fixed inset-0 z-[1000]"
+            onClick={() => setShowCollectionSelector(false)}
+          />
+        )}
+        {showMoodSelector && (
+          <div
+            className="fixed inset-0 z-[1000]"
+            onClick={() => setShowMoodSelector(false)}
+          />
+        )}
+      </div>
+
+      <div className="lg:hidden flex min-h-screen bg-white flex items-center justify-center ">
+        <p className="text-2xl">Mobile devices are not supported!</p>
+      </div>
+    </>
   );
 }
 

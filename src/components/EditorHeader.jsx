@@ -50,6 +50,7 @@ function EditorHeader() {
         <EntryMoodSelector />
       </div>
       <button
+        disabled={!selectedMood | !selectedCollection}
         onClick={() =>
           id
             ? handleUpdateEntry(

@@ -18,7 +18,7 @@ function Navbar() {
 
   function renderNavigations() {
     return user ? (
-      <div className="flex items-center space-x-8">
+      <div className="items-center space-x-8 hidden lg:flex">
         {navItems.map(({ path, icon: Icon, label }) => (
           <Link
             key={path}
