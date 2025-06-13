@@ -37,7 +37,7 @@ function DetailedCollectionItem({
                     )}
                   </span>
                   <span>•</span>
-                  <span>{mood?.type ? getMoodText(mood.type) : null}</span>
+                  <span>{mood?.type ? getMoodByMoodId(mood.type) : null}</span>
                 </div>
               </div>
             </div>
